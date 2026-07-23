@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembuat QR Code — Villa Gardenia 17-an</title>
+<!-- Library QR (dipin + integrity hash agar tak bisa dipalsukan). Butuh internet saat pertama dibuka. -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"
+        integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k"
+        crossorigin="anonymous"></script>
+<style>
+  :root{ --red:#bc0100; --ink:#1b1b1c; --muted:#5d5f5f; --line:#ebbbb4; --bg:#fcf8f9; --card:#fff; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:"Plus Jakarta Sans",system-ui,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+  .wrap{ max-width:760px; margin:0 auto; padding:24px 16px 64px; }
+  header{ text-align:center; margin-bottom:24px; }
+  header .flag{ font-size:34px; }
+  h1{ font-family:Montserrat,system-ui,sans-serif; font-size:26px; margin:6px 0 4px; color:var(--red); }
+  header p{ color:var(--muted); margin:0; }
+  .grid{ display:grid; grid-template-columns:1fr; gap:20px; }
+  @media(min-width:680px){ .grid{ grid-template-columns:1fr 1fr; align-items:start; } }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px; box-shadow:0 10px 30px -14px rgba(188,1,0,.18); }
+  label{ display:block; font-size:13px; font-weight:600; letter-spacing:.03em; color:var(--muted); margin:14px 0 6px; }
+  label:first-child{ margin-top:0; }
+  input,select{ width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:12px; font-size:16px; font-family:inherit; background:#fff; color:var(--ink); }
+  input:focus,select:focus{ outline:2px solid var(--red); outline-offset:1px; border-color:transparent; }
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:16px; padding:13px 18px; border:0; border-radius:999px; background:var(--red); color:#fff; font-weight:700; font-size:16px; font-family:inherit; cursor:pointer; transition:transform .12s ease, filter .12s ease; }
+  .btn:active{ transform:scale(.98); }
+  .btn.secondary{ background:#fff; color:var(--red); border:1px solid var(--red); }
+  .downloads{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .downloads .btn{ margin-top:0; }
+  .preview{ display:flex; flex-direction:column; align-items:center; text-align:center; }
+  #qrbox{ width:100%; max-width:320px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; background:#fff; border:1px dashed var(--line); border-radius:14px; overflow:hidden; }
+  #qrbox canvas{ width:100%; height:100%; image-rendering:pixelated; }
+  .cap{ margin-top:10px; font-weight:700; color:var(--red); min-height:22px; word-break:break-word; }
+  .hint{ font-size:13px; color:var(--muted); margin-top:10px; line-height:1.5; }
+  .err{ display:none; background:#ffdad6; color:#93000a; border:1px solid #ffb4a8; border-radius:12px; padding:12px 14px; margin-top:16px; font-size:14px; }
+  code{ background:#f0edee; padding:1px 6px; border-radius:6px; font-size:13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="flag">🇮🇩</div>
+    <h1>Pembuat QR Code</h1>
+    <p>Buat QR untuk situs donasi — untuk dicetak & dibagikan di grup WhatsApp.</p>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <label for="url">Alamat situs (URL)</label>
+      <input id="url" type="url" inputmode="url" value="https://villagardenia17an.duckdns.org" placeholder="https://domain-anda.com">
+
+      <label for="cap">Teks di bawah QR (opsional)</label>
+      <input id="cap" type="text" maxlength="40" value="Scan untuk Donasi 17-an">
+
+      <label for="ecc">Kualitas / ketahanan (error correction)</label>
+      <select id="ecc">
+        <option value="M" selected>Sedang (M) — ukuran QR lebih kecil</option>
+        <option value="Q">Tinggi (Q)</option>
+        <option value="H">Sangat tinggi (H) — cocok untuk cetak besar</option>
+      </select>
+
+      <button class="btn" id="make">Buat QR Code</button>
+      <div class="downloads">
+        <button class="btn secondary" id="dl-png">Unduh PNG</button>
+        <button class="btn secondary" id="dl-svg">Unduh SVG</button>
+      </div>
+      <div id="err" class="err"></div>
+      <p class="hint">PNG cocok untuk WhatsApp & cetak biasa. SVG tajam untuk poster besar (bisa diperbesar tanpa pecah). Isi URL dengan alamat situs Anda yang sudah online.</p>
+    </div>
+
+    <div class="card preview">
+      <div id="qrbox"><span class="hint">QR akan muncul di sini…</span></div>
+      <div class="cap" id="capview"></div>
+      <p class="hint">Tempel gambar ini di flyer, mading, atau grup WhatsApp RT. Warga cukup arahkan kamera HP untuk membuka halaman donasi.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var urlEl=$("url"), capEl=$("cap"), eccEl=$("ecc"), box=$("qrbox"), capView=$("capview"), err=$("err");
+  var qrObj=null;
+
+  function showErr(msg){ err.style.display="block"; err.textContent=msg; }
+  function clearErr(){ err.style.display="none"; err.textContent=""; }
+
+  function build(){
+    clearErr();
+    if (typeof qrcode === "undefined"){ showErr("Gagal memuat pustaka QR. Pastikan ada koneksi internet saat pertama membuka halaman ini, lalu muat ulang."); return false; }
+    var url=(urlEl.value||"").trim();
+    if (!url){ showErr("Isi alamat situs (URL) dulu."); box.innerHTML='<span class="hint">QR akan muncul di sini…</span>'; return false; }
+    try{
+      var qr=qrcode(0, eccEl.value);   // 0 = ukuran otomatis
+      qr.addData(url);
+      qr.make();
+      qrObj=qr;
+      drawPreview();
+      capView.textContent=(capEl.value||"").trim();
+      return true;
+    }catch(e){ showErr("URL terlalu panjang untuk QR. Coba perpendek alamatnya. ("+e.message+")"); return false; }
+  }
+
+  function toCanvas(scale, quiet){
+    var mc=qrObj.getModuleCount();
+    var size=(mc+quiet*2)*scale;
+    var c=document.createElement("canvas"); c.width=c.height=size;
+    var ctx=c.getContext("2d");
+    ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,size,size);
+    ctx.fillStyle="#111111";
+    for(var r=0;r<mc;r++) for(var col=0;col<mc;col++) if(qrObj.isDark(r,col)) ctx.fillRect((col+quiet)*scale,(r+quiet)*scale,scale,scale);
+    return c;
+  }
+
+  function drawPreview(){
+    var c=toCanvas(8,4);
+    box.innerHTML=""; box.appendChild(c);
+  }
+
+  function exportPNG(){
+    if(!build()) return;
+    var qc=toCanvas(24,4);
+    var cap=(capEl.value||"").trim();
+    var pad=48, capH=cap?110:0;
+    var out=document.createElement("canvas"); out.width=qc.width+pad*2; out.height=qc.height+pad*2+capH;
+    var ctx=out.getContext("2d");
+    ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,out.width,out.height);
+    ctx.drawImage(qc,pad,pad);
+    if(cap){ ctx.fillStyle="#bc0100"; ctx.textAlign="center"; ctx.font='700 46px Montserrat, Arial, sans-serif'; ctx.fillText(cap, out.width/2, qc.height+pad+70); }
+    var a=document.createElement("a"); a.download="qr-villa-gardenia.png"; a.href=out.toDataURL("image/png"); a.click();
+  }
+
+  function esc(s){ return String(s).replace(/[<&>]/g,function(x){return {"<":"&lt;","&":"&amp;",">":"&gt;"}[x];}); }
+  function exportSVG(){
+    if(!build()) return;
+    var mc=qrObj.getModuleCount(), quiet=4, unit=10, dim=(mc+quiet*2)*unit;
+    var cap=(capEl.value||"").trim(), capH=cap?70:0, rects="";
+    for(var r=0;r<mc;r++) for(var c=0;c<mc;c++) if(qrObj.isDark(r,c)) rects+='<rect x="'+((c+quiet)*unit)+'" y="'+((r+quiet)*unit)+'" width="'+unit+'" height="'+unit+'"/>';
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+dim+'" height="'+(dim+capH)+'" viewBox="0 0 '+dim+' '+(dim+capH)+'">'
+      +'<rect width="100%" height="100%" fill="#ffffff"/><g fill="#111111">'+rects+'</g>'
+      +(cap?'<text x="'+(dim/2)+'" y="'+(dim+42)+'" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="30" fill="#bc0100">'+esc(cap)+'</text>':'')
+      +'</svg>';
+    var blob=new Blob([svg],{type:"image/svg+xml"});
+    var a=document.createElement("a"); a.download="qr-villa-gardenia.svg"; a.href=URL.createObjectURL(blob); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },1500);
+  }
+
+  $("make").addEventListener("click", build);
+  $("dl-png").addEventListener("click", exportPNG);
+  $("dl-svg").addEventListener("click", exportSVG);
+  [urlEl,capEl,eccEl].forEach(function(el){ el.addEventListener("input", build); el.addEventListener("change", build); });
+
+  if (document.readyState==="loading") document.addEventListener("DOMContentLoaded", build); else build();
+})();
+</script>
+</body>
+</html>

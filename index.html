@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Penggalangan Dana HUT RI ke-81 — Villa Gardenia</title>
+<meta name="description" content="Penggalangan dana bergotong royong untuk merayakan HUT RI ke-81 di Villa Gardenia. Pantau capaian dana secara transparan.">
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "secondary-container": "#dfe0e0","on-error": "#ffffff","surface-container": "#f0edee",
+          "tertiary-fixed": "#ffe16d","tertiary-container": "#c9a900","outline": "#956d67",
+          "on-primary-container": "#fffbff","tertiary-fixed-dim": "#e9c400","secondary-fixed": "#e2e2e2",
+          "on-error-container": "#93000a","surface": "#fcf8f9","surface-container-lowest": "#ffffff",
+          "primary-fixed": "#ffdad4","on-tertiary-container": "#4c3f00","primary": "#bc0100",
+          "on-secondary-container": "#616363","on-tertiary-fixed": "#221b00","on-secondary-fixed-variant": "#454747",
+          "on-primary-fixed-variant": "#930100","on-tertiary": "#ffffff","surface-container-low": "#f6f3f4",
+          "surface-container-highest": "#e5e2e3","background": "#fcf8f9","inverse-primary": "#ffb4a8",
+          "on-secondary": "#ffffff","inverse-surface": "#303031","primary-fixed-dim": "#ffb4a8",
+          "surface-bright": "#fcf8f9","on-tertiary-fixed-variant": "#544600","secondary": "#5d5f5f",
+          "on-surface-variant": "#603e39","tertiary": "#705d00","outline-variant": "#ebbbb4",
+          "on-primary-fixed": "#410000","surface-variant": "#e5e2e3","primary-container": "#eb0000",
+          "secondary-fixed-dim": "#c6c6c7","error": "#ba1a1a","surface-dim": "#dcd9da",
+          "error-container": "#ffdad6","inverse-on-surface": "#f3f0f1","on-secondary-fixed": "#1a1c1c",
+          "on-background": "#1b1b1c","on-primary": "#ffffff","on-surface": "#1b1b1c",
+          "surface-tint": "#c00100","surface-container-high": "#eae7e8"
+        },
+        borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+        spacing: {
+          "stack-lg": "32px","stack-sm": "8px","gutter": "24px","container-max": "1200px",
+          "margin-mobile": "16px","base": "8px","stack-md": "16px","margin-desktop": "48px"
+        },
+        fontFamily: {
+          "headline-xl-mobile": ["Montserrat"],"headline-md": ["Montserrat"],"label-md": ["Plus Jakarta Sans"],
+          "headline-xl": ["Montserrat"],"body-lg": ["Plus Jakarta Sans"],"body-md": ["Plus Jakarta Sans"],
+          "headline-lg": ["Montserrat"],"headline-lg-mobile": ["Montserrat"],"headline-sm": ["Montserrat"]
+        },
+        fontSize: {
+          "headline-xl-mobile": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "700" }],
+          "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+          "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.05em", fontWeight: "600" }],
+          "headline-xl": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+          "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+          "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+          "headline-lg": ["36px", { lineHeight: "44px", letterSpacing: "-0.01em", fontWeight: "700" }],
+          "headline-lg-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "700" }],
+          "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }]
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  :root{
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  html { scroll-behavior: smooth; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+  .glow-red { box-shadow: 0 10px 30px -12px rgba(188, 1, 0, 0.18); }
+  .glow-red-hover { transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out); }
+  .glow-red-hover:hover { box-shadow: 0 18px 44px -12px rgba(188, 1, 0, 0.28); transform: translateY(-2px); }
+
+  .press { transition: transform 140ms var(--ease-out); }
+  .press:active { transform: scale(0.97); }
+
+  .progress-fill { width: 0; transition: width 1500ms var(--ease-out); }
+  .shine::after{
+    content:""; position:absolute; inset:0;
+    background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.55) 50%, transparent 80%);
+    transform: translateX(-100%);
+    animation: shine 2.4s var(--ease-in-out) 3;
+  }
+  @keyframes shine { to { transform: translateX(100%); } }
+
+  .reveal { opacity: 0; transform: translateY(14px); }
+  .reveal.in { opacity: 1; transform: none; transition: opacity .55s var(--ease-out), transform .55s var(--ease-out); }
+
+  .modal-backdrop { transition: opacity 200ms var(--ease-out); }
+  .modal-panel { transform-origin: center; transition: transform 220ms var(--ease-out), opacity 220ms var(--ease-out); }
+  .modal[hidden] { display: none; }
+  .modal[data-closed] .modal-backdrop { opacity: 0; }
+  .modal[data-closed] .modal-panel { opacity: 0; transform: scale(0.95); }
+
+  .quick-nominal[aria-pressed="true"]{
+    border-color:#bc0100; background:rgba(188,1,0,.06); color:#bc0100; font-weight:700;
+  }
+
+  .skeleton-box{ background:linear-gradient(90deg,#eee 25%,#f5f5f5 37%,#eee 63%); background-size:400% 100%; animation:skel 1.4s ease infinite; border-radius:12px; }
+  @keyframes skel { 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+
+  .badge-live{ background:#e6f4ea; color:#1e6b33; border:1px solid #b6ddc2; }
+  .badge-sample{ background:#fff4d6; color:#7a5f00; border:1px solid #f0d98a; }
+  .badge-loading{ background:#eee; color:#555; border:1px solid #ddd; }
+
+  @media (hover: hover) and (pointer: fine){ .card-img:hover { transform: scale(1.05); } }
+  .card-img { transition: transform 500ms var(--ease-out); }
+
+  @media (prefers-reduced-motion: reduce){
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; }
+    .progress-fill { transition: none; }
+    .shine::after, .card-img, .skeleton-box { animation: none; transition: none; }
+    .glow-red-hover:hover { transform: none; }
+  }
+
+  /* Print: hanya tampilkan ringkasan progress + laporan keuangan */
+  @media print {
+    header, footer, #tentang, #kegiatan, #donasi, #donatur,
+    #btn-print, #share-wa, #share-copy, #refresh-data, #data-source,
+    #pay-modal, #toast { display: none !important; }
+    body { background:#fff !important; color:#000 !important; overflow: visible !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    #progress, #laporan { padding: 12px 0 !important; background:#fff !important; }
+    .glow-red { box-shadow: none !important; }
+    table { page-break-inside: auto; }
+    tr, thead { page-break-inside: avoid; }
+  }
+</style>
+</head>
+
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased overflow-x-hidden">
+
+<!-- ============ TOP NAV ============ -->
+<header class="bg-surface/90 backdrop-blur border-b border-outline-variant w-full top-0 z-50 sticky transition-all duration-300">
+  <div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-20 max-w-container-max mx-auto">
+    <a href="#tentang" class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">celebration</span>
+      Villa Gardenia 17-an
+    </a>
+    <nav class="hidden md:flex items-center gap-gutter">
+      <a class="text-secondary font-medium font-label-md text-label-md hover:text-primary transition-colors" href="#tentang">Tentang</a>
+      <a class="text-secondary font-medium font-label-md text-label-md hover:text-primary transition-colors" href="#kegiatan">Kegiatan</a>
+      <a class="text-secondary font-medium font-label-md text-label-md hover:text-primary transition-colors" href="#donasi">Donasi</a>
+      <a class="text-secondary font-medium font-label-md text-label-md hover:text-primary transition-colors" href="#donatur">Donatur</a>
+      <a class="text-secondary font-medium font-label-md text-label-md hover:text-primary transition-colors" href="#laporan">Laporan</a>
+    </nav>
+    <a class="hidden md:flex items-center justify-center bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-full hover:bg-surface-tint press glow-red" href="#donasi">
+      Donasi Sekarang
+    </a>
+    <button id="menu-btn" aria-label="Buka menu" aria-expanded="false" class="md:hidden text-on-surface press">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </div>
+  <div id="mobile-menu" hidden class="md:hidden border-t border-outline-variant bg-surface">
+    <nav class="flex flex-col px-margin-mobile py-2">
+      <a class="py-3 text-on-surface font-label-md text-label-md hover:text-primary" href="#tentang">Tentang</a>
+      <a class="py-3 text-on-surface font-label-md text-label-md hover:text-primary" href="#kegiatan">Kegiatan</a>
+      <a class="py-3 text-on-surface font-label-md text-label-md hover:text-primary" href="#donasi">Donasi</a>
+      <a class="py-3 text-on-surface font-label-md text-label-md hover:text-primary" href="#donatur">Donatur</a>
+      <a class="py-3 text-on-surface font-label-md text-label-md hover:text-primary" href="#laporan">Laporan</a>
+      <a class="mt-2 mb-3 text-center bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-full press" href="#donasi">Donasi Sekarang</a>
+    </nav>
+  </div>
+</header>
+
+<main class="w-full">
+
+<!-- ============ HERO ============ -->
+<section class="relative w-full pt-16 pb-20 md:pt-28 md:pb-32 px-margin-mobile md:px-margin-desktop overflow-hidden scroll-mt-24" id="tentang">
+  <div class="absolute inset-0 w-full h-full z-0">
+    <div class="w-full h-full bg-cover bg-center opacity-20" style="background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuCQMEdNk95Z24tVlydrXB2MoaP9Z1qgMg2FtQmMND0YgbR4TivnVHPCmSJnlCU1nTLO235pyIzpo7fF2v3fFEZzqsX_CK6v8XH-yQxNH8SAYpUq74ijKm5raTPi2uSfiQhNpzpAe184kbGQivxnuGaPK4frJW3eEhbfx4Jw0o-VGBr06HurqTUOT4F2ZelJu2Af9XmhL3c2Q6SHGAycGkvcu_aPBuDGKBJx7dJB2I2fOvEHu5SDhGJarX-FndhmbP7dRgCsTnIn8bg')"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-surface via-surface/80 to-surface"></div>
+  </div>
+  <div class="relative z-10 max-w-container-max mx-auto flex flex-col items-center text-center">
+    <span class="inline-flex items-center gap-2 mb-stack-md px-4 py-1.5 rounded-full bg-primary/10 text-primary font-label-md text-label-md">
+      <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1;">flag</span>
+      HUT RI ke-81 · 17 Agustus 2026
+    </span>
+    <h1 class="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-stack-md max-w-4xl">
+      Rayakan Kemerdekaan di <span class="text-primary">Villa Gardenia!</span>
+    </h1>
+    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-stack-lg">
+      Mari bergotong royong menyukseskan perayaan HUT RI ke-81. Setiap donasi Anda membawa kita lebih dekat ke acara yang meriah dan tak terlupakan.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center gap-3 mb-stack-lg">
+      <a class="inline-flex items-center justify-center bg-primary text-on-primary font-label-md text-label-md px-8 py-4 rounded-full hover:bg-surface-tint press glow-red-hover text-lg" href="#donasi">
+        Donasi Sekarang
+        <span class="material-symbols-outlined ml-2 text-base">arrow_forward</span>
+      </a>
+      <a class="inline-flex items-center justify-center bg-surface-container-lowest text-on-surface border border-outline-variant font-label-md text-label-md px-8 py-4 rounded-full hover:border-primary hover:text-primary press text-lg" href="#laporan">
+        Lihat Transparansi Dana
+      </a>
+    </div>
+
+    <div class="w-full max-w-md">
+      <p id="cd-label" class="font-label-md text-label-md text-secondary mb-2">Menuju Hari-H</p>
+      <div id="countdown" class="grid grid-cols-4 gap-2 md:gap-3">
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl py-3 glow-red"><div id="cd-hari" class="font-headline-md text-headline-md text-primary tabular-nums">--</div><div class="font-label-md text-label-md text-secondary">Hari</div></div>
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl py-3 glow-red"><div id="cd-jam" class="font-headline-md text-headline-md text-primary tabular-nums">--</div><div class="font-label-md text-label-md text-secondary">Jam</div></div>
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl py-3 glow-red"><div id="cd-menit" class="font-headline-md text-headline-md text-primary tabular-nums">--</div><div class="font-label-md text-label-md text-secondary">Menit</div></div>
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl py-3 glow-red"><div id="cd-detik" class="font-headline-md text-headline-md text-primary tabular-nums">--</div><div class="font-label-md text-label-md text-secondary">Detik</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROGRESS DANA ============ -->
+<section class="py-16 md:py-20 px-margin-mobile md:px-margin-desktop bg-surface-container-low w-full scroll-mt-24" id="progress" aria-busy="true">
+  <div class="max-w-container-max mx-auto">
+    <div class="bg-surface-container-lowest rounded-[24px] p-6 md:p-12 border border-outline-variant glow-red">
+      <div class="flex flex-col lg:flex-row gap-gutter lg:items-center">
+        <div class="w-full lg:w-3/5">
+          <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Progress Penggalangan Dana</h2>
+          <p class="font-body-md text-body-md text-secondary mb-3">Bersama kita bisa mencapai target untuk acara yang tak terlupakan.</p>
+
+          <div class="flex items-center flex-wrap gap-2 mb-5">
+            <span id="data-source" class="badge-loading inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-md text-label-md">
+              <span class="material-symbols-outlined text-sm">sync</span> Memuat…
+            </span>
+            <span id="data-updated" class="font-label-md text-label-md text-secondary"></span>
+            <button id="refresh-data" aria-label="Muat ulang data" class="inline-flex items-center gap-1 text-secondary hover:text-primary press font-label-md text-label-md" title="Muat ulang data">
+              <span class="material-symbols-outlined text-base">refresh</span>
+            </button>
+          </div>
+
+          <div class="flex justify-between items-end mb-2">
+            <div>
+              <span class="font-label-md text-label-md text-secondary block">Terkumpul</span>
+              <span id="stat-terkumpul" class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary tabular-nums">Rp 0</span>
+            </div>
+            <div class="text-right">
+              <span class="font-label-md text-label-md text-secondary block">Target</span>
+              <span id="stat-target" class="font-body-lg text-body-lg text-on-surface font-semibold tabular-nums">Rp 0</span>
+            </div>
+          </div>
+
+          <div class="w-full h-4 bg-surface-container-highest rounded-full overflow-hidden"
+               role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Capaian dana terkumpul" id="bar-wrap">
+            <div id="bar-fill" class="progress-fill h-full bg-gradient-to-r from-primary to-inverse-primary rounded-full relative shine"></div>
+          </div>
+          <div class="mt-2 flex justify-between font-label-md text-label-md">
+            <span class="text-secondary">Ayo capai target bersama!</span>
+            <span id="bar-percent" class="text-primary font-bold tabular-nums">0% Tercapai</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 mt-6">
+            <div class="bg-surface-container-low rounded-xl p-3 text-center"><div id="stat-donatur" class="font-headline-sm text-headline-sm text-on-surface tabular-nums">0</div><div class="font-label-md text-label-md text-secondary">Donatur</div></div>
+            <div class="bg-surface-container-low rounded-xl p-3 text-center"><div id="stat-sisa" class="font-headline-sm text-headline-sm text-on-surface tabular-nums">Rp 0</div><div class="font-label-md text-label-md text-secondary">Menuju Target</div></div>
+            <div class="bg-surface-container-low rounded-xl p-3 text-center"><div id="stat-hari" class="font-headline-sm text-headline-sm text-on-surface tabular-nums">0</div><div class="font-label-md text-label-md text-secondary">Hari Tersisa</div></div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 mt-6">
+            <span class="font-label-md text-label-md text-secondary mr-1">Ajak tetangga:</span>
+            <button id="share-wa" class="inline-flex items-center gap-2 bg-primary/5 text-primary border border-primary/40 font-label-md text-label-md px-4 py-2 rounded-full hover:bg-primary hover:text-on-primary press transition-colors"><span class="material-symbols-outlined text-base">share</span> WhatsApp</button>
+            <button id="share-copy" class="inline-flex items-center gap-2 bg-surface-container-low text-on-surface border border-outline-variant font-label-md text-label-md px-4 py-2 rounded-full hover:border-primary press"><span class="material-symbols-outlined text-base">link</span> Salin Link</button>
+          </div>
+        </div>
+
+        <div class="w-full lg:w-2/5 aspect-[4/3] rounded-xl overflow-hidden relative border border-outline-variant">
+          <img class="w-full h-full object-cover" alt="Ilustrasi kemajuan penggalangan dana komunitas dengan aksen merah putih" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMTIKXUtHNgScRJIUGwT-mGIxkY3nPLZd1YqX-kKkNead6_LZUt9M0J77FrglcZ2nYd25NGHj5Iz27KVrh0zewURmgOoPdUL1U8aicfxyuorqvAUGiPpy10RW2toAU1Othy-h9Grd7MPPR0sqqhGbdMt6-pwJvfmp7m1UKOueD0Tb9l_lYRsClzonjxEjmh6r2nCuyrh1LQG-zxaYqgBidz57LTyp65UsdZTAL_WF9IBHEF-ZYIEXcM0ZpRRWOKRwhXAMC1WZUyLw">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KEGIATAN ============ -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop bg-surface w-full scroll-mt-24" id="kegiatan">
+  <div class="max-w-container-max mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-4">Rangkaian Kegiatan</h2>
+      <p class="font-body-lg text-body-lg text-secondary max-w-2xl mx-auto">Berbagai acara meriah telah kami siapkan untuk merayakan kemerdekaan bersama seluruh warga Villa Gardenia.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+      <article class="reveal bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant hover:border-primary/50 transition-colors group">
+        <div class="h-48 w-full relative overflow-hidden bg-surface-container">
+          <img class="card-img w-full h-full object-cover" alt="Anak-anak mengikuti lomba tradisional 17 Agustus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA6WyfBmh1_cQ-6JlFKP9cNs6JiLO69lIAXhkTNYicr0rTmgOu6YTiOHBb-eurxZQot5M-K26WFFzVNOJnR0ViTXTp0gFcwFGBKl7x4k04xOJJza3jQlrahtJOoKon5oPpNTCVr5iAyMwrj77oxgef0-kXyzvCXyTP-8OhLb7K1COZdXLdd__5NxXjetiZSIVAu-NjICAfAqgZKEXxq4-uasl9f6heV_CdklAECj5NChVBVIBqajeEScPACVgFEhcuXsQn3uEfm3A">
+          <div class="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1 rounded-full border border-outline-variant"><span class="font-label-md text-label-md text-primary">17 Agustus</span></div>
+        </div>
+        <div class="p-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-2">Lomba Anak-anak</h3><p class="font-body-md text-body-md text-secondary">Beragam lomba tradisional yang mendidik dan menyenangkan untuk anak-anak di lingkungan kita.</p></div>
+      </article>
+      <article class="reveal bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant hover:border-primary/50 transition-colors group">
+        <div class="h-48 w-full relative overflow-hidden bg-surface-container">
+          <img class="card-img w-full h-full object-cover" alt="Warga berkumpul dalam Malam Tirakatan menjelang 17 Agustus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ2FlMtJLt-tLEyZZDqyMpbbry5YtdA0n-1HOXKMvEujLUAB80AkRddmOtjWpEVbSRL4uVtWvvV8WCp31I4Z3LSMkTQ3qCwQ9O0UQP0zMm6y_rsFGz_Qmtj03vOWrde-ziEPmIZbkYkK9wC0wEzhyY5Fz8d_zMt8V38SCZlx8p2upyNmpB2S8iE4YU5vKXQWd0ji6WCXQ5TZ9sQQ_pR8MxQL1u2XpGPmzA1M51gV4ZD7dA-yJm-cNme2iDltNMGHQM-Bssku2SNBA">
+          <div class="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1 rounded-full border border-outline-variant"><span class="font-label-md text-label-md text-primary">16 Agustus</span></div>
+        </div>
+        <div class="p-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-2">Malam Tirakatan</h3><p class="font-body-md text-body-md text-secondary">Malam renungan dan doa bersama sebagai wujud syukur atas kemerdekaan bangsa.</p></div>
+      </article>
+      <article class="reveal bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant hover:border-primary/50 transition-colors group">
+        <div class="h-48 w-full relative overflow-hidden bg-surface-container">
+          <img class="card-img w-full h-full object-cover" alt="Pawai budaya keliling perumahan menampilkan kostum tradisional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwuWVAxOQik1-uCKH_5RF_PTPHdPwh9EQ7DIOOIEh5K4Ckc3PC0wMUrDwmMxuAuaAGElJxBm0wRmlZFx8FGkv33KLR9MUKK3bSxafI3pJVjVYayiaxMEHeCYJ1ah59cVSagO9xmhAZBsftIOjZVIbHKfYxnbcEZVa7FWZ_6njUIGO44WQ4-g6OB-pQz7dw0OlmWBtbbUAfIo-r9jNEHKWJzGEPlDNrBFgGD36ZTTvcWnVsiNJFDegx0E7c_0DPfB9YB-rEhlzzgoQ">
+          <div class="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-sm px-3 py-1 rounded-full border border-outline-variant"><span class="font-label-md text-label-md text-primary">18 Agustus</span></div>
+        </div>
+        <div class="p-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-2">Pawai Budaya</h3><p class="font-body-md text-body-md text-secondary">Puncak acara berupa karnaval keliling perumahan menampilkan kreativitas warga.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DONASI ============ -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop bg-background w-full scroll-mt-24" id="donasi">
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-surface-container-lowest rounded-3xl p-8 md:p-12 border border-outline-variant glow-red">
+      <div class="text-center mb-10">
+        <span class="material-symbols-outlined text-primary text-5xl mb-4" style="font-variation-settings:'FILL' 1;">volunteer_activism</span>
+        <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-2">Dukung Acara Kita</h2>
+        <p class="font-body-md text-body-md text-secondary">Pilih nominal donasi Anda untuk memeriahkan acara 17-an tahun ini.</p>
+      </div>
+      <form id="donasi-form" class="space-y-8" novalidate>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="quick-grid">
+          <button data-nominal="50000" class="quick-nominal press py-3 px-4 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary" type="button" aria-pressed="false">Rp 50.000</button>
+          <button data-nominal="100000" class="quick-nominal press py-3 px-4 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary" type="button" aria-pressed="false">Rp 100.000</button>
+          <button data-nominal="200000" class="quick-nominal press py-3 px-4 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary" type="button" aria-pressed="false">Rp 200.000</button>
+          <button data-nominal="500000" class="quick-nominal press py-3 px-4 rounded-xl border border-outline-variant bg-surface-container-lowest text-on-surface font-label-md text-label-md hover:border-primary hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary" type="button" aria-pressed="false">Rp 500.000</button>
+        </div>
+        <div>
+          <label class="block font-label-md text-label-md text-on-surface mb-2" for="amount">Atau masukkan nominal</label>
+          <div class="relative rounded-xl">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"><span class="text-secondary font-body-lg text-body-lg">Rp</span></div>
+            <input class="block w-full rounded-xl border-0 py-4 pl-12 pr-4 text-on-surface ring-1 ring-inset ring-outline-variant placeholder:text-secondary-fixed-dim focus:ring-2 focus:ring-inset focus:ring-primary font-body-lg text-body-lg bg-surface-container-lowest tabular-nums" id="amount" name="amount" placeholder="0" inputmode="numeric" autocomplete="off" type="text">
+          </div>
+          <label class="block mt-2 font-label-md text-label-md text-secondary" for="donor-name">Nama (opsional, untuk papan donatur)</label>
+          <input class="mt-1 block w-full rounded-xl border-0 py-3 px-4 text-on-surface ring-1 ring-inset ring-outline-variant placeholder:text-secondary-fixed-dim focus:ring-2 focus:ring-inset focus:ring-primary font-body-md text-body-md bg-surface-container-lowest" id="donor-name" name="donor-name" placeholder="Nama / Blok — mis. Kel. Wijaya (Blok C)" autocomplete="name" type="text">
+        </div>
+        <button class="w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-label-md text-label-md px-8 py-4 rounded-full hover:bg-surface-tint press glow-red-hover text-lg" type="submit" id="btn-bayar">
+          <span class="material-symbols-outlined">payments</span> Lanjut Pembayaran
+        </button>
+        <p class="text-center font-label-md text-label-md text-secondary flex items-center justify-center gap-1"><span class="material-symbols-outlined text-base">lock</span> Donasi via transfer bank / QRIS. Data Anda aman.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DONATUR ============ -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop bg-surface w-full scroll-mt-24" id="donatur">
+  <div class="max-w-container-max mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-4">Papan Donatur</h2>
+      <p class="font-body-lg text-body-lg text-secondary max-w-2xl mx-auto">Terima kasih kepada <span id="donatur-count" class="text-primary font-semibold">0</span> warga dan keluarga yang telah berdonasi. Gotong royong Anda sangat berarti!</p>
+    </div>
+    <div id="donatur-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </div>
+</section>
+
+<!-- ============ LAPORAN ============ -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-low w-full scroll-mt-24" id="laporan">
+  <div class="max-w-container-max mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-4">Laporan Keuangan Transparan</h2>
+      <p class="font-body-lg text-body-lg text-secondary max-w-2xl mx-auto">Pantau penggunaan dana warga secara terbuka untuk transparansi dan akuntabilitas bersama.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-12">
+      <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant"><span class="font-label-md text-label-md text-secondary block mb-1">Total Pemasukan</span><span id="lap-pemasukan" class="font-headline-md text-headline-md text-primary tabular-nums">Rp 0</span></div>
+      <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant"><span class="font-label-md text-label-md text-secondary block mb-1">Total Pengeluaran</span><span id="lap-pengeluaran" class="font-headline-md text-headline-md text-on-surface tabular-nums">Rp 0</span></div>
+      <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant"><span class="font-label-md text-label-md text-secondary block mb-1">Saldo Saat Ini</span><span id="lap-saldo" class="font-headline-md text-headline-md text-primary tabular-nums">Rp 0</span></div>
+    </div>
+    <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant overflow-hidden">
+      <div class="p-6 border-b border-outline-variant flex flex-wrap items-center justify-between gap-3">
+        <h3 class="font-headline-sm text-headline-sm text-on-surface">Riwayat Transaksi</h3>
+        <button id="btn-print" class="inline-flex items-center gap-2 bg-primary/5 text-primary border border-primary font-label-md text-label-md px-4 py-2 rounded-full hover:bg-primary hover:text-on-primary press transition-colors"><span class="material-symbols-outlined text-lg">print</span> Cetak / Simpan PDF</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead><tr class="bg-surface-container-low">
+            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant">Tanggal</th>
+            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant">Keterangan</th>
+            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant">Kategori</th>
+            <th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant text-right">Jumlah</th>
+          </tr></thead>
+          <tbody id="tabel-transaksi" class="divide-y divide-outline-variant"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-surface-container-highest border-t border-outline-variant" id="kontak">
+  <div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-stack-lg max-w-container-max mx-auto gap-stack-md">
+    <div class="flex flex-col items-center md:items-start text-center md:text-left gap-2">
+      <div class="font-headline-sm text-headline-sm font-bold text-on-surface">Villa Gardenia 17-an</div>
+      <div class="font-body-md text-body-md text-secondary">© 2026 Panitia HUT RI ke-81 Villa Gardenia. Semangat Gotong Royong.</div>
+      <div class="font-body-md text-body-md text-secondary">Kontak Panitia: <a id="footer-wa" class="text-primary hover:underline" href="#">Hubungi via WhatsApp</a></div>
+    </div>
+    <nav class="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2">
+      <a class="font-label-md text-label-md text-on-secondary-fixed-variant hover:text-primary transition-colors" href="#tentang">Tentang</a>
+      <a class="font-label-md text-label-md text-on-secondary-fixed-variant hover:text-primary transition-colors" href="#laporan">Laporan Keuangan</a>
+      <a class="font-label-md text-label-md text-on-secondary-fixed-variant hover:text-primary transition-colors" href="#donasi">Donasi</a>
+      <a class="font-label-md text-label-md text-on-secondary-fixed-variant hover:text-primary transition-colors" href="#kontak">Kontak Panitia</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ============ PAYMENT MODAL ============ -->
+<div id="pay-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4" hidden data-closed role="dialog" aria-modal="true" aria-labelledby="pay-title">
+  <div class="modal-backdrop absolute inset-0 bg-black/50" data-close></div>
+  <div class="modal-panel relative w-full max-w-md bg-surface-container-lowest rounded-3xl border border-outline-variant shadow-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+    <button data-close aria-label="Tutup" class="absolute top-4 right-4 text-secondary hover:text-on-surface press"><span class="material-symbols-outlined">close</span></button>
+    <div class="text-center mb-6">
+      <span class="material-symbols-outlined text-primary text-4xl mb-2" style="font-variation-settings:'FILL' 1;">account_balance_wallet</span>
+      <h3 id="pay-title" class="font-headline-sm text-headline-sm text-on-surface">Selesaikan Donasi</h3>
+      <p class="font-body-md text-body-md text-secondary mt-1">Nominal donasi Anda</p>
+      <p id="pay-amount" class="font-headline-md text-headline-md text-primary mt-1 tabular-nums">Rp 0</p>
+    </div>
+    <div class="rounded-2xl border border-outline-variant p-4 mb-4">
+      <div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-primary">account_balance</span><span class="font-label-md text-label-md text-on-surface">Transfer Bank</span></div>
+      <div class="space-y-2">
+        <div class="flex justify-between items-center"><span class="font-body-md text-body-md text-secondary">Bank</span><span id="pay-bank" class="font-body-md text-body-md text-on-surface font-semibold">—</span></div>
+        <div class="flex justify-between items-center gap-2"><span class="font-body-md text-body-md text-secondary">No. Rekening</span><span class="flex items-center gap-2"><span id="pay-rekening" class="font-body-md text-body-md text-on-surface font-semibold tabular-nums">—</span><button id="copy-rek" class="text-primary press" aria-label="Salin nomor rekening"><span class="material-symbols-outlined text-lg">content_copy</span></button></span></div>
+        <div class="flex justify-between items-center"><span class="font-body-md text-body-md text-secondary">Atas Nama</span><span id="pay-nama" class="font-body-md text-body-md text-on-surface font-semibold text-right">—</span></div>
+      </div>
+    </div>
+    <div id="qris-wrap" class="rounded-2xl border border-outline-variant p-4 mb-4 text-center" hidden>
+      <div class="flex items-center justify-center gap-2 mb-3"><span class="material-symbols-outlined text-primary">qr_code_2</span><span class="font-label-md text-label-md text-on-surface">Scan QRIS</span></div>
+      <img id="qris-img" alt="Kode QRIS pembayaran panitia" class="mx-auto max-w-[220px] w-full rounded-xl border border-outline-variant">
+    </div>
+    <p class="font-body-md text-body-md text-secondary text-center mb-4">Setelah transfer, konfirmasikan ke bendahara agar donasi Anda tercatat di papan donatur & laporan.</p>
+    <a id="pay-wa" href="#" target="_blank" rel="noopener" class="w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-label-md text-label-md px-8 py-4 rounded-full hover:bg-surface-tint press glow-red-hover text-lg"><span class="material-symbols-outlined">chat</span> Konfirmasi via WhatsApp</a>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" role="status" aria-live="polite" aria-atomic="true" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[110] bg-inverse-surface text-inverse-on-surface px-5 py-3 rounded-full font-label-md text-label-md shadow-xl opacity-0 pointer-events-none transition-opacity duration-200"></div>
+
+<script>
+/* =====================================================================
+   KONFIGURASI PANITIA — CUKUP UBAH BAGIAN INI SAJA
+   =====================================================================
+   - danaTarget    : target dana (angka saja, tanpa titik/koma)
+   - pembayaran    : rekening & WhatsApp bendahara (WAJIB DIGANTI)
+   - googleSheet   : sinkron OTOMATIS dari Google Sheet (lihat panduan)
+   - donatur/pengeluaran : DATA CONTOH — dipakai bila Google Sheet
+     belum aktif / gagal dimuat, agar halaman tak pernah kosong.
+
+   CARA MENGAKTIFKAN SINKRON GOOGLE SHEET (ringkas):
+   1) Buat Google Sheet, tab pertama beri kolom baris-1 PERSIS:
+        Tanggal | Nama | Jenis | Jumlah | Catatan
+      - Jenis   : tulis "Pemasukan" (donasi) atau "Pengeluaran"
+      - Tanggal : format YYYY-MM-DD, mis. 2026-08-05
+      - Jumlah  : angka, mis. 500000  (boleh "Rp 500.000" juga)
+   2) Menu: File > Share > Publish to web > pilih tab itu >
+      format "Comma-separated values (.csv)" > Publish > salin link.
+   3) Tempel link ke googleSheet.csvUrl, lalu ubah aktif jadi true.
+   ===================================================================== */
+const KONFIG = {
+  acara: { nama: "HUT RI ke-81", lokasi: "Villa Gardenia", tanggalHariH: "2026-08-17T07:00:00+07:00" },
+
+  danaTarget: 25000000,
+
+  pembayaran: {
+    bank:       "BCA",                        // GANTI
+    noRekening: "0000 1111 2222",             // GANTI
+    atasNama:   "Bendahara Panitia (contoh)", // GANTI
+    whatsapp:   "6281234567890",              // GANTI — format 62..., tanpa + / spasi
+    qrisImage:  ""                            // opsional: URL/base64 gambar QRIS
+  },
+
+  googleSheet: {
+    aktif: false,          // ubah ke true setelah csvUrl diisi
+    csvUrl: "",            // tempel link CSV hasil "Publish to web" di sini
+    autoRefreshDetik: 0    // 0 = mati; mis. 120 = muat ulang tiap 2 menit
+  },
+
+  // ---- DATA CONTOH (fallback) — boleh diganti data asli seadanya ----
+  donatur: [
+    { nama: "Warga Blok A (kolektif)", jumlah: 3500000, tanggal: "2026-07-05", catatan: "Iuran bersama Blok A" },
+    { nama: "Warga Blok B (kolektif)", jumlah: 3000000, tanggal: "2026-07-08", catatan: "Iuran bersama Blok B" },
+    { nama: "Warga Blok C (kolektif)", jumlah: 2750000, tanggal: "2026-07-10", catatan: "Iuran bersama Blok C" },
+    { nama: "Bpk. Hendra",             jumlah: 1000000, tanggal: "2026-07-11", catatan: "" },
+    { nama: "Kel. Wijaya",             jumlah: 1000000, tanggal: "2026-07-12", catatan: "Semangat 17-an!" },
+    { nama: "Bpk. Raka Pratama",       jumlah: 1250000, tanggal: "2026-07-14", catatan: "" },
+    { nama: "Bpk. Anton",              jumlah:  750000, tanggal: "2026-07-15", catatan: "" },
+    { nama: "Warung Bu Tini (UMKM)",   jumlah:  500000, tanggal: "2026-07-16", catatan: "Dukungan UMKM warga" },
+    { nama: "Ibu Sri",                 jumlah:  500000, tanggal: "2026-07-18", catatan: "" },
+    { nama: "Hamba Allah",             jumlah:  500000, tanggal: "2026-07-20", catatan: "" }
+  ],
+  pengeluaran: [
+    { keterangan: "Sewa Tenda & Panggung",  jumlah: 2750000, tanggal: "2026-07-16" },
+    { keterangan: "Pembelian Hadiah Lomba", jumlah: 1500000, tanggal: "2026-07-18" },
+    { keterangan: "Dekorasi & Umbul-umbul", jumlah: 1200000, tanggal: "2026-07-19" },
+    { keterangan: "Konsumsi Rapat Panitia", jumlah:  850000, tanggal: "2026-07-20" }
+  ]
+};
+
+/* ===================== LOGIKA (tidak perlu diubah) ===================== */
+(function () {
+  "use strict";
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Formatter aman ---------- */
+  function groupID(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+  function rupiah(n){ n = Number.isFinite(n) ? n : 0; try { return "Rp " + Math.round(n).toLocaleString("id-ID"); } catch(e){ return "Rp " + groupID(n); } }
+
+  function clean(s, max){
+    s = String(s == null ? "" : s).replace(/[\u0000-\u001F\u200B-\u200F\u202A-\u202E\uFEFF]/g, "").trim();
+    return s.length > max ? s.slice(0, max) + "…" : s;
+  }
+  function initials(name){
+    const parts = String(name || "").replace(/\(.*?\)/g, "").trim().split(/\s+/).filter(Boolean).slice(0, 2);
+    return parts.map(w => Array.from(w)[0]).join("").toUpperCase() || "?";
+  }
+
+  /* ---------- Parser angka (locale Indonesia) ---------- */
+  function parseAmount(raw){
+    if (raw == null) return 0;
+    let s = String(raw).trim(); if (!s) return 0;
+    s = s.replace(/[^\d.,-]/g, "");                 // buang 'Rp', spasi, huruf
+    const lc = s.lastIndexOf(","), ld = s.lastIndexOf(".");
+    let dec = null;
+    if (lc > -1 && ld > -1) dec = lc > ld ? "," : ".";
+    else if (lc > -1) dec = (/,\d{1,2}$/.test(s) && !/^\d{1,3}(,\d{3})+$/.test(s)) ? "," : null;
+    else if (ld > -1) dec = (/\.\d{1,2}$/.test(s) && !/^\d{1,3}(\.\d{3})+$/.test(s)) ? "." : null;
+    if (dec){ const thou = dec === "," ? "." : ","; s = s.split(thou).join("").replace(dec, "."); }
+    else s = s.replace(/[.,]/g, "");
+    const n = parseFloat(s);
+    return Number.isFinite(n) && n >= 0 ? Math.round(n) : 0;
+  }
+
+  /* ---------- Parser tanggal (ISO / D-M-Y / nama bulan Indonesia) ---------- */
+  const MONTHS = { jan:0,feb:1,peb:1,mar:2,apr:3,mei:4,may:4,jun:5,jul:6,agu:7,ags:7,agt:7,aug:7,sep:8,okt:9,oct:9,nov:10,des:11,dec:11 };
+  function parseDate(raw){
+    if (raw == null) return null;
+    if (raw instanceof Date) return isNaN(raw.getTime()) ? null : raw;
+    const s = String(raw).trim(); if (!s) return null; let m;
+    if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return new Date(+m[1], +m[2]-1, +m[3]);
+    if ((m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/))){ let y = +m[3]; if (m[3].length === 2) y += 2000; return new Date(y, +m[2]-1, +m[1]); }
+    if ((m = s.match(/^(\d{1,2})\s+([A-Za-zÀ-ſ]+)\.?\s+(\d{4})$/))){ const mo = MONTHS[m[2].slice(0,3).toLowerCase()]; if (mo != null) return new Date(+m[3], mo, +m[1]); }
+    const fb = new Date(s); return isNaN(fb.getTime()) ? null : fb;
+  }
+  function tgl(d){ const dt = parseDate(d); return dt ? dt.toLocaleDateString("id-ID", { day:"numeric", month:"short", year:"numeric" }) : "—"; }
+  const byDateDesc = (a, b) => {
+    const ad = a.tanggal && a.tanggal.getTime ? a.tanggal.getTime() : -Infinity;
+    const bd = b.tanggal && b.tanggal.getTime ? b.tanggal.getTime() : -Infinity;
+    return bd - ad;
+  };
+
+  /* ---------- CSV parser RFC-4180 ---------- */
+  function parseCSV(text){
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);      // strip BOM
+    const rows = []; let row = [], f = "", i = 0, q = false; const n = text.length;
+    while (i < n){ const c = text[i];
+      if (q){ if (c === '"'){ if (text[i+1] === '"'){ f += '"'; i += 2; continue; } q = false; i++; continue; } f += c; i++; continue; }
+      if (c === '"'){ q = true; i++; continue; }
+      if (c === ','){ row.push(f); f = ""; i++; continue; }
+      if (c === '\r'){ i++; continue; }
+      if (c === '\n'){ row.push(f); rows.push(row); row = []; f = ""; i++; continue; }
+      f += c; i++;
+    }
+    if (f.length || row.length){ row.push(f); rows.push(row); }
+    return rows.filter(r => r.some(c => c.trim() !== ""));
+  }
+
+  const norm = h => String(h).replace(/^﻿/, "").trim().toLowerCase().replace(/\s+/g, "");
+  function mapRows(rows){
+    if (!rows.length) return { donatur: [], pengeluaran: [], ok: false };
+    const H = rows[0].map(norm);
+    const col = (...names) => { for (const nm of names){ const i = H.indexOf(nm); if (i > -1) return i; } return -1; };
+    const iNama = col("nama","name","donatur","uraian","pemberi");
+    const iJumlah = col("jumlah","nominal","amount","donasi","nilai");
+    const iTgl = col("tanggal","tgl","date");
+    const iCat = col("catatan","pesan","note","ket","keterangan");
+    const iJenis = col("jenis","tipe","type","kategori");
+    if (iNama < 0 || iJumlah < 0) return { donatur: [], pengeluaran: [], ok: false };
+    const get = (c, i) => i > -1 ? String(c[i] == null ? "" : c[i]).trim() : "";
+    const donatur = [], pengeluaran = [];
+    for (let r = 1; r < rows.length; r++){
+      const c = rows[r];
+      const jumlah = parseAmount(get(c, iJumlah));
+      const tanggal = parseDate(get(c, iTgl));
+      const jenis = get(c, iJenis).toLowerCase();
+      const nama = get(c, iNama);
+      if (!nama && !jumlah) continue;
+      if (/^(keluar|pengeluaran|expense|belanja|biaya|debet|debit)/.test(jenis))
+        pengeluaran.push({ keterangan: get(c, iCat) || nama || "Pengeluaran", jumlah, tanggal });
+      else
+        donatur.push({ nama: nama || "Hamba Allah", jumlah, tanggal, catatan: get(c, iCat) });
+    }
+    return { donatur, pengeluaran, ok: true };
+  }
+
+  function normalizeSample(){
+    return {
+      donatur: (KONFIG.donatur || []).map(d => ({ nama: d.nama, jumlah: parseAmount(d.jumlah), tanggal: parseDate(d.tanggal), catatan: d.catatan || "" })),
+      pengeluaran: (KONFIG.pengeluaran || []).map(d => ({ keterangan: d.keterangan, jumlah: parseAmount(d.jumlah), tanggal: parseDate(d.tanggal) })),
+      ok: true
+    };
+  }
+
+  /* ---------- Muat data (live Google Sheet -> data terakhir -> contoh) ---------- */
+  let lastGood = null;
+  async function loadData(){
+    const g = KONFIG.googleSheet || {};
+    if (!g.aktif || !g.csvUrl) return { data: normalizeSample(), source: "sample", at: null };
+    try {
+      const url = g.csvUrl + (g.csvUrl.indexOf("?") > -1 ? "&" : "?") + "_cb=" + Date.now();
+      const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 8000);
+      const res = await fetch(url, { signal: ctrl.signal, cache: "no-store", redirect: "follow" });
+      clearTimeout(t);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const text = await res.text();
+      if (/^\s*</.test(text) || text.trim() === "") throw new Error("Respons bukan CSV (sheet belum di-publish?)");
+      const data = mapRows(parseCSV(text));
+      if (!data.ok || (!data.donatur.length && !data.pengeluaran.length)) throw new Error("CSV kosong / kolom hilang");
+      lastGood = { data, source: "live", at: new Date() };
+      return lastGood;
+    } catch (err){
+      if (window.console) console.warn("[Villa Gardenia] Data live gagal:", err && err.message);
+      // Jangan turunkan data asli menjadi contoh saat gagal sesaat — pakai data live terakhir.
+      if (lastGood) return { data: lastGood.data, source: "live", at: lastGood.at, stale: true };
+      return { data: normalizeSample(), source: "sample", at: null };
+    }
+  }
+
+  /* ---------- Render aman (textContent, tanpa innerHTML) ---------- */
+  function el(tag, cls, txt){ const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+
+  function donorRow(d){
+    const wrap = el("div", "flex items-start gap-3 bg-surface-container-lowest border border-outline-variant rounded-2xl p-4");
+    wrap.appendChild(el("div", "shrink-0 w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center font-headline-sm text-headline-sm", initials(d.nama)));
+    const body = el("div", "min-w-0 flex-1");
+    const top = el("div", "flex items-center justify-between gap-2");
+    top.appendChild(el("span", "font-body-md text-body-md text-on-surface font-semibold truncate", d.nama));
+    top.appendChild(el("span", "font-label-md text-label-md text-primary whitespace-nowrap tabular-nums", rupiah(d.jumlah)));
+    body.appendChild(top);
+    body.appendChild(el("div", "font-label-md text-label-md text-secondary", tgl(d.tanggal) + (d.catatan ? " · “" + d.catatan + "”" : "")));
+    wrap.appendChild(body);
+    return wrap;
+  }
+  function txnRow(t){
+    const tr = document.createElement("tr");
+    tr.appendChild(el("td", "px-6 py-4 font-body-md text-body-md text-secondary whitespace-nowrap", tgl(t.tanggal)));
+    tr.appendChild(el("td", "px-6 py-4 font-body-md text-body-md text-on-surface", t.ket));
+    tr.appendChild(el("td", "px-6 py-4 font-body-md text-body-md text-secondary", t.kat));
+    tr.appendChild(el("td", "px-6 py-4 font-body-md text-body-md text-right whitespace-nowrap tabular-nums " + (t.masuk ? "text-primary" : "text-on-surface"), (t.masuk ? "+ " : "- ") + rupiah(t.jumlah)));
+    return tr;
+  }
+
+  /* ---------- State & count-up ---------- */
+  const state = { totalPemasukan: 0, target: 0, pctReal: 0, shareText: "" };
+  let progressShown = false;
+  let statsAnimated = false;
+
+  function countUp(node, to, fmt, dur){
+    dur = dur || 1400;
+    if (reduceMotion){ node.textContent = fmt(to); return; }
+    const ease = t => 1 - Math.pow(1 - t, 3);
+    let start = null;
+    function step(ts){
+      if (start === null) start = ts;
+      const p = Math.min(1, (ts - start) / dur);
+      node.textContent = fmt(to * ease(p));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function inView(elm){ const r = elm.getBoundingClientRect(); return r.top < (window.innerHeight || 0) && r.bottom > 0; }
+
+  function showProgress(){
+    progressShown = true;
+    const bar = $("#bar-fill"), wrap = $("#bar-wrap");
+    const pct = Math.max(0, Math.min(100, Number.isFinite(state.pctReal) ? state.pctReal : 0));
+    wrap.setAttribute("aria-valuenow", String(Math.round(pct)));
+    if (!statsAnimated && !reduceMotion){
+      statsAnimated = true;
+      countUp($("#stat-terkumpul"), state.totalPemasukan, rupiah);
+      countUp($("#bar-percent"), pct, v => Math.round(v) + "% Tercapai");
+    } else {
+      $("#stat-terkumpul").textContent = rupiah(state.totalPemasukan);
+      $("#bar-percent").textContent = Math.round(pct) + "% Tercapai";
+    }
+    if (reduceMotion) bar.style.width = pct + "%";
+    else requestAnimationFrame(() => { bar.style.width = pct + "%"; });
+  }
+
+  /* ---------- Terapkan data ke halaman ---------- */
+  function applyData(payload){
+    const donatur = payload.data.donatur.map(d => ({ nama: clean(d.nama, 60) || "Hamba Allah", jumlah: Number.isFinite(d.jumlah) ? d.jumlah : 0, tanggal: d.tanggal, catatan: clean(d.catatan || "", 140) }));
+    const pengeluaran = payload.data.pengeluaran.map(d => ({ keterangan: clean(d.keterangan, 80) || "Pengeluaran", jumlah: Number.isFinite(d.jumlah) ? d.jumlah : 0, tanggal: d.tanggal }));
+
+    const totalPemasukan = donatur.reduce((a, d) => a + d.jumlah, 0);
+    const totalPengeluaran = pengeluaran.reduce((a, d) => a + d.jumlah, 0);
+    const saldo = totalPemasukan - totalPengeluaran;
+    const target = parseAmount(KONFIG.danaTarget);
+    const pctReal = target > 0 ? (totalPemasukan / target) * 100 : 0;
+    const sisa = Math.max(0, target - totalPemasukan);
+
+    state.totalPemasukan = totalPemasukan;
+    state.target = target;
+    state.pctReal = Number.isFinite(pctReal) ? pctReal : 0;
+
+    $("#stat-target").textContent = rupiah(target);
+    $("#lap-pemasukan").textContent = rupiah(totalPemasukan);
+    $("#lap-pengeluaran").textContent = rupiah(totalPengeluaran);
+    $("#lap-saldo").textContent = rupiah(saldo);
+    $("#stat-donatur").textContent = donatur.length.toLocaleString("id-ID");
+    $("#donatur-count").textContent = donatur.length.toLocaleString("id-ID");
+    $("#stat-sisa").textContent = sisa === 0 ? "Tercapai! 🎉" : rupiah(sisa);
+    const hari = Math.max(0, Math.floor((new Date(KONFIG.acara.tanggalHariH).getTime() - Date.now()) / 86400000));
+    $("#stat-hari").textContent = hari.toLocaleString("id-ID");
+
+    const dl = $("#donatur-list"); dl.textContent = "";
+    if (!donatur.length) dl.appendChild(el("p", "col-span-full text-center text-secondary font-body-md text-body-md py-8", "Belum ada donasi tercatat. Jadilah yang pertama! 🇮🇩"));
+    else [...donatur].sort(byDateDesc).forEach(d => dl.appendChild(donorRow(d)));
+
+    const tb = $("#tabel-transaksi"); tb.textContent = "";
+    const txns = [
+      ...donatur.map(d => ({ tanggal: d.tanggal, ket: d.nama, kat: "Pemasukan", jumlah: d.jumlah, masuk: true })),
+      ...pengeluaran.map(d => ({ tanggal: d.tanggal, ket: d.keterangan, kat: "Pengeluaran", jumlah: d.jumlah, masuk: false }))
+    ].sort(byDateDesc);
+    if (!txns.length){ const tr = document.createElement("tr"); const td = el("td", "px-6 py-8 text-center text-secondary", "Belum ada transaksi."); td.setAttribute("colspan", "4"); tr.appendChild(td); tb.appendChild(tr); }
+    else txns.forEach(t => tb.appendChild(txnRow(t)));
+
+    setSourceBadge(payload.source, payload.stale);
+    setUpdated(payload.at);
+
+    // Nilai untuk pembaca layar selalu benar, tak bergantung animasi.
+    $("#bar-wrap").setAttribute("aria-valuenow", String(Math.round(Math.max(0, Math.min(100, state.pctReal)))));
+    if (progressShown || inView($("#progress"))) showProgress();
+
+    state.shareText = "Ayo dukung perayaan HUT RI ke-81 di Villa Gardenia! 🇮🇩 Terkumpul " + rupiah(totalPemasukan) + " dari target " + rupiah(target) + ". Ikut berdonasi di sini:";
+    $("#progress").setAttribute("aria-busy", "false");
+  }
+
+  function setSourceBadge(source, stale){
+    const b = $("#data-source"); b.textContent = "";
+    const dot = el("span", "material-symbols-outlined text-sm"); dot.setAttribute("aria-hidden", "true");
+    if (source === "live"){
+      b.className = "badge-live inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-md text-label-md";
+      dot.textContent = "cloud_done"; b.appendChild(dot);
+      b.appendChild(document.createTextNode(stale ? " Data Live (tersimpan)" : " Data Live"));
+      b.title = stale ? "Menampilkan data terakhir yang berhasil dimuat — koneksi ke Google Sheet sedang gagal." : "Data langsung dari Google Sheet.";
+    } else {
+      b.className = "badge-sample inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-label-md text-label-md";
+      dot.textContent = "info"; b.appendChild(dot);
+      b.appendChild(document.createTextNode(" Data Contoh"));
+      b.title = "Menampilkan data contoh — sinkron Google Sheet belum aktif / gagal dimuat.";
+    }
+  }
+  function setUpdated(at){
+    $("#data-updated").textContent = at ? "Diperbarui " + at.toLocaleString("id-ID", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }) : "";
+  }
+
+  function renderSkeleton(){
+    const dl = $("#donatur-list"); dl.textContent = "";
+    for (let i = 0; i < 6; i++){ const c = el("div", "flex items-center gap-3 bg-surface-container-lowest border border-outline-variant rounded-2xl p-4"); c.appendChild(el("div", "skeleton-box w-11 h-11 rounded-full")); const b = el("div", "flex-1 space-y-2"); b.appendChild(el("div", "skeleton-box h-4 w-2/3")); b.appendChild(el("div", "skeleton-box h-3 w-1/3")); c.appendChild(b); dl.appendChild(c); }
+    const tb = $("#tabel-transaksi"); tb.textContent = "";
+    for (let i = 0; i < 4; i++){ const tr = document.createElement("tr"); for (let j = 0; j < 4; j++){ const td = el("td", "px-6 py-4"); td.appendChild(el("div", "skeleton-box h-4 " + (j === 1 ? "w-40" : "w-20") + (j === 3 ? " ml-auto" : ""))); tr.appendChild(td); } tb.appendChild(tr); }
+  }
+
+  let refreshing = false;
+  async function refresh(){
+    if (refreshing) return;               // cegah tumpang-tindih (race)
+    refreshing = true;
+    try { applyData(await loadData()); }  // tanpa skeleton: data lama tetap tampil sampai data baru siap
+    finally { refreshing = false; }
+  }
+
+  /* ---------- Hitung mundur ---------- */
+  function tick(){
+    const diff = new Date(KONFIG.acara.tanggalHariH).getTime() - Date.now();
+    const set = (id, v) => { const e = $("#" + id); if (e) e.textContent = v; };
+    if (diff <= 0){ set("cd-hari","0"); set("cd-jam","0"); set("cd-menit","0"); set("cd-detik","0"); const l = $("#cd-label"); if (l) l.textContent = "Dirgahayu Republik Indonesia! 🇮🇩"; return false; }
+    const s = Math.floor(diff / 1000);
+    set("cd-hari", Math.floor(s / 86400));
+    set("cd-jam", String(Math.floor((s % 86400) / 3600)).padStart(2, "0"));
+    set("cd-menit", String(Math.floor((s % 3600) / 60)).padStart(2, "0"));
+    set("cd-detik", String(s % 60).padStart(2, "0"));
+    return true;
+  }
+
+  let toastTimer;
+  function toast(msg){ const t = $("#toast"); t.textContent = msg; t.style.opacity = "1"; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.style.opacity = "0"), 2200); }
+
+  /* ---------- Wiring statis ---------- */
+  function wireStatic(){
+    const menuBtn = $("#menu-btn"), mobileMenu = $("#mobile-menu");
+    menuBtn.addEventListener("click", () => {
+      const open = mobileMenu.hasAttribute("hidden");
+      if (open){ mobileMenu.removeAttribute("hidden"); menuBtn.setAttribute("aria-expanded", "true"); }
+      else { mobileMenu.setAttribute("hidden", ""); menuBtn.setAttribute("aria-expanded", "false"); }
+    });
+    $$("#mobile-menu a").forEach(a => a.addEventListener("click", () => { mobileMenu.setAttribute("hidden", ""); menuBtn.setAttribute("aria-expanded", "false"); }));
+
+    let nominal = 0;
+    const amountInput = $("#amount");
+    const quickBtns = $$(".quick-nominal");
+    const setActive = val => quickBtns.forEach(b => b.setAttribute("aria-pressed", String(Number(b.dataset.nominal) === val)));
+    quickBtns.forEach(btn => btn.addEventListener("click", () => { nominal = Number(btn.dataset.nominal); amountInput.value = nominal.toLocaleString("id-ID"); setActive(nominal); }));
+    amountInput.addEventListener("input", () => { const digits = amountInput.value.replace(/\D/g, ""); nominal = digits ? Number(digits) : 0; amountInput.value = digits ? nominal.toLocaleString("id-ID") : ""; setActive(nominal); });
+
+    const modal = $("#pay-modal"); let lastFocus = null;
+    const p = KONFIG.pembayaran;
+    $("#pay-bank").textContent = p.bank;
+    $("#pay-rekening").textContent = p.noRekening;
+    $("#pay-nama").textContent = p.atasNama;
+    if (p.qrisImage){ $("#qris-wrap").removeAttribute("hidden"); $("#qris-img").src = p.qrisImage; }
+    $("#footer-wa").href = "https://wa.me/" + p.whatsapp;
+
+    function waLink(amount, name){
+      const teks = "Halo Panitia HUT RI ke-81 Villa Gardenia 🇮🇩\n\nSaya ingin berdonasi:\n• Nama: " + (name || "(mohon diisi)") + "\n• Nominal: " + rupiah(amount) + "\n\nBukti transfer saya lampirkan di chat ini. Terima kasih!";
+      return "https://wa.me/" + p.whatsapp + "?text=" + encodeURIComponent(teks);
+    }
+    const bgLandmarks = ["header", "main", "footer"].map(s => document.querySelector(s)).filter(Boolean);
+    function openModal(){
+      if (nominal < 1000){ toast("Masukkan nominal donasi dulu ya 🙏"); amountInput.focus(); return; }
+      $("#pay-amount").textContent = rupiah(nominal);
+      $("#pay-wa").href = waLink(nominal, $("#donor-name").value.trim());
+      lastFocus = document.activeElement;
+      modal.removeAttribute("hidden");
+      requestAnimationFrame(() => modal.removeAttribute("data-closed"));
+      document.body.style.overflow = "hidden";
+      bgLandmarks.forEach(node => node.setAttribute("inert", ""));   // kunci fokus di dalam modal
+      $("#pay-wa").focus();
+    }
+    function closeModal(){
+      bgLandmarks.forEach(node => node.removeAttribute("inert"));    // lepas sebelum kembalikan fokus
+      modal.setAttribute("data-closed", "");
+      document.body.style.overflow = "";
+      setTimeout(() => modal.setAttribute("hidden", ""), 220);
+      if (lastFocus) lastFocus.focus();
+    }
+    $("#donasi-form").addEventListener("submit", e => { e.preventDefault(); openModal(); });
+    $$("[data-close]", modal).forEach(elm => elm.addEventListener("click", closeModal));
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && !modal.hasAttribute("hidden")) closeModal(); });
+
+    $("#copy-rek").addEventListener("click", async () => { try { await navigator.clipboard.writeText(p.noRekening.replace(/\s/g, "")); toast("Nomor rekening tersalin!"); } catch (e){ toast("Gagal menyalin, salin manual ya"); } });
+
+    $("#share-wa").addEventListener("click", () => window.open("https://wa.me/?text=" + encodeURIComponent((state.shareText || "Dukung HUT RI ke-81 Villa Gardenia!") + " " + location.href), "_blank", "noopener"));
+    $("#share-copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText(location.href); toast("Link tersalin!"); } catch (e){ toast("Gagal menyalin link"); } });
+
+    $("#btn-print").addEventListener("click", () => window.print());
+    $("#refresh-data").addEventListener("click", () => { toast("Memuat ulang data…"); refresh(); });
+  }
+
+  /* ---------- Observers ---------- */
+  function setupObservers(){
+    if ("IntersectionObserver" in window){
+      const io = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting && !progressShown){ showProgress(); io.disconnect(); } }); }, { threshold: 0 });
+      io.observe($("#progress"));
+    } else showProgress();
+
+    if ("IntersectionObserver" in window && !reduceMotion){
+      const cards = $$(".reveal");
+      const io2 = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting){ const idx = cards.indexOf(e.target); e.target.style.transitionDelay = (Math.max(0, idx) % 3) * 70 + "ms"; e.target.classList.add("in"); io2.unobserve(e.target); } }); }, { threshold: 0.2 });
+      cards.forEach(c => io2.observe(c));
+    } else $$(".reveal").forEach(c => c.classList.add("in"));
+  }
+
+  /* ---------- Init ---------- */
+  async function init(){
+    wireStatic();
+    $$(".material-symbols-outlined").forEach(s => s.setAttribute("aria-hidden", "true")); // ikon dekoratif
+    tick(); if (tick()) setInterval(tick, 1000);
+    renderSkeleton();                 // skeleton hanya untuk muat pertama
+    applyData(await loadData());
+    setupObservers();                 // pasang observer setelah data siap (animasi reveal benar)
+    const raw = Number(KONFIG.googleSheet && KONFIG.googleSheet.autoRefreshDetik) || 0;
+    if (raw > 0 && KONFIG.googleSheet.aktif && KONFIG.googleSheet.csvUrl){
+      const ivMs = Math.max(30, raw) * 1000;   // minimal 30 detik
+      (function loop(){ setTimeout(async () => { await refresh(); loop(); }, ivMs); })();
+    }
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+</body>
+</html>
