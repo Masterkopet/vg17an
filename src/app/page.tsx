@@ -4,6 +4,7 @@ import { KONFIG } from "@/lib/config";
 import { paragraphs, parseKegiatan, parsePanitia, parseRekening, parseKontak } from "@/lib/content";
 import { inisial } from "@/lib/format";
 import Countdown from "@/components/Countdown";
+import HeroParallax from "@/components/HeroParallax";
 import LiveData from "@/components/LiveData";
 import SiteHeader from "@/components/SiteHeader";
 
@@ -36,54 +37,9 @@ export default async function Home() {
       <SiteHeader />
 
       <main className="w-full">
-        {/* HERO — ilustrasi perayaan sebagai panggung, dipecah jadi lapisan animasi */}
+        {/* HERO — ilustrasi dipecah jadi lapisan parallax (mouse + scroll) */}
         <section className="relative w-full scroll-mt-24" id="beranda">
-          {/* Lapisan 1: ilustrasi (Ken Burns pelan) */}
-          <div className="relative w-full overflow-hidden h-[420px] sm:h-[480px] md:h-[560px] lg:h-[640px]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/assets/hero-illustration.jpg"
-              alt="Ilustrasi perayaan HUT RI ke-81 warga Villa Gardenia"
-              className="hero-kenburns w-full h-full object-cover object-[50%_30%]"
-            />
-
-            {/* Lapisan 2: kelip di atas kembang api ilustrasi */}
-            <div aria-hidden>
-              {[
-                { left: "26%", top: "13%", delay: "0s" },
-                { left: "13%", top: "7%", delay: "0.9s" },
-                { left: "72%", top: "9%", delay: "0.4s" },
-                { left: "80%", top: "24%", delay: "1.4s" },
-                { left: "66%", top: "19%", delay: "2s" },
-              ].map((t, i) => (
-                <span key={i} className="twinkle" style={{ left: t.left, top: t.top, animationDelay: t.delay }} />
-              ))}
-            </div>
-
-            {/* Lapisan 3: konfeti pelan terus melayang */}
-            <div aria-hidden>
-              {[
-                { left: "6%", delay: "0s", dur: "11s", c: "#d3170a" },
-                { left: "16%", delay: "3s", dur: "13s", c: "#ffffff" },
-                { left: "27%", delay: "6s", dur: "10s", c: "#ffe16d" },
-                { left: "38%", delay: "1.5s", dur: "12s", c: "#ffffff" },
-                { left: "52%", delay: "4.5s", dur: "14s", c: "#d3170a" },
-                { left: "63%", delay: "8s", dur: "11s", c: "#ffe16d" },
-                { left: "74%", delay: "2.5s", dur: "13s", c: "#d3170a" },
-                { left: "85%", delay: "5.5s", dur: "10s", c: "#ffffff" },
-                { left: "93%", delay: "7s", dur: "12s", c: "#d3170a" },
-              ].map((p, i) => (
-                <span
-                  key={i}
-                  className="hero-confetti"
-                  style={{ left: p.left, background: p.c, animationDelay: p.delay, animationDuration: p.dur }}
-                />
-              ))}
-            </div>
-
-            {/* Peralihan halus ke konten di bawah */}
-            <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-surface" aria-hidden />
-          </div>
+          <HeroParallax />
 
           {/* Lapisan 4: kartu konten — countdown & info menyatu rapi */}
           <div className="relative z-20 -mt-24 md:-mt-32 px-margin-mobile md:px-margin-desktop">
