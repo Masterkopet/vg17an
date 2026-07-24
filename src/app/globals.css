@@ -164,21 +164,6 @@ body {
   to { transform: rotate(1.2deg); }
 }
 
-/* Marquee "Dirgahayu" — gerak konstan, linear */
-.marquee { overflow: hidden; }
-.marquee-track {
-  display: inline-flex;
-  align-items: center;
-  gap: 2.5rem;
-  white-space: nowrap;
-  padding-left: 2.5rem;
-  animation: marquee 22s linear infinite;
-  will-change: transform;
-}
-@keyframes marquee {
-  to { transform: translateX(-50%); }
-}
-
 /* Konfeti merah-putih (saat donasi sukses) */
 .confetti-piece {
   position: fixed;
@@ -200,7 +185,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .bunting { animation: none; }
-  .marquee-track { animation: none; padding-left: 0; }
   .confetti-piece { display: none; }
 }
 

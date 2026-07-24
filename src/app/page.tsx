@@ -36,67 +36,45 @@ export default async function Home() {
       <SiteHeader />
 
       <main className="w-full">
-        {/* HERO — merah kemerdekaan */}
-        <section className="relative w-full overflow-hidden scroll-mt-24 bg-gradient-to-b from-[#d3170a] via-[#c00e00] to-[#8f0100] text-white" id="beranda">
+        {/* HERO — logo resmi HUT RI 81 sebagai background penuh */}
+        <section className="relative w-full overflow-hidden scroll-mt-24 text-white" id="beranda">
+          <div className="absolute inset-0 z-0" aria-hidden>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/logo-hut81.jpg" alt="" className="w-full h-full object-cover object-center" />
+            {/* overlay merah agar teks tetap terbaca di atas logo */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#b60c00]/75 via-[#a80d00]/60 to-[#7a0100]/90" />
+          </div>
+
           {/* umbul-umbul */}
-          <div className="bunting pt-0" aria-hidden>
+          <div className="relative z-10 bunting" aria-hidden>
             {Array.from({ length: 40 }).map((_, i) => (
               <span key={i} />
             ))}
           </div>
-          <div className="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-10 pb-16 md:pt-14 md:pb-24">
-            <div className="flex flex-col lg:flex-row items-center gap-10">
-              <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left">
-                <span className="inline-flex items-center gap-2 mb-stack-md px-4 py-1.5 rounded-full bg-white/15 text-white font-label-md text-label-md backdrop-blur-sm">
-                  <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }} aria-hidden>flag</span>
-                  HUT RI ke-81 · 17 Agustus 2026
-                </span>
-                <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl mb-stack-md max-w-3xl">
-                  Rayakan Kemerdekaan di <span className="text-[#ffe16d]">Villa Gardenia!</span>
-                </h1>
-                <p className="font-body-lg text-body-lg text-white/85 max-w-2xl mb-stack-lg">
-                  Mari bergotong royong menyukseskan perayaan HUT RI ke-81. Setiap donasi Anda membawa kita lebih dekat ke acara yang meriah dan tak terlupakan.
-                </p>
-                <div className="flex flex-col sm:flex-row items-center gap-3 mb-stack-lg">
-                  <a className="inline-flex items-center justify-center bg-white text-primary font-bold font-label-md text-label-md px-8 py-4 rounded-full press glow-red-hover text-lg" href="#donasi">
-                    Donasi Sekarang
-                    <span className="material-symbols-outlined ml-2 text-base" aria-hidden>arrow_forward</span>
-                  </a>
-                  <a className="inline-flex items-center justify-center bg-transparent text-white border border-white/60 font-label-md text-label-md px-8 py-4 rounded-full hover:bg-white/10 press text-lg" href="#laporan">
-                    Lihat Transparansi Dana
-                  </a>
-                </div>
-                <Countdown target={KONFIG.acara.tanggalHariH} onDark />
-              </div>
-              <div className="flex-1 w-full max-w-xl">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/assets/logo-hut81.jpg"
-                  alt="Logo resmi HUT RI ke-81 — Indonesia Berdaulat, Adil dan Makmur"
-                  className="w-full h-auto rounded-2xl shadow-2xl border border-white/20"
-                />
-              </div>
+
+          <div className="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-12 pb-16 md:pt-20 md:pb-28 flex flex-col items-center text-center">
+            <span className="inline-flex items-center gap-2 mb-stack-md px-4 py-1.5 rounded-full bg-white/15 text-white font-label-md text-label-md backdrop-blur-sm">
+              <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }} aria-hidden>flag</span>
+              HUT RI ke-81 · 17 Agustus 2026
+            </span>
+            <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl mb-stack-md max-w-4xl">
+              Rayakan Kemerdekaan di <span className="text-[#ffe16d]">Villa Gardenia!</span>
+            </h1>
+            <p className="font-body-lg text-body-lg text-white/90 max-w-2xl mb-stack-lg">
+              Mari bergotong royong menyukseskan perayaan HUT RI ke-81. Setiap donasi Anda membawa kita lebih dekat ke acara yang meriah dan tak terlupakan.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-3 mb-stack-lg">
+              <a className="inline-flex items-center justify-center bg-white text-primary font-bold font-label-md text-label-md px-8 py-4 rounded-full press glow-red-hover text-lg" href="#donasi">
+                Donasi Sekarang
+                <span className="material-symbols-outlined ml-2 text-base" aria-hidden>arrow_forward</span>
+              </a>
+              <a className="inline-flex items-center justify-center bg-transparent text-white border border-white/60 font-label-md text-label-md px-8 py-4 rounded-full hover:bg-white/10 press text-lg" href="#laporan">
+                Lihat Transparansi Dana
+              </a>
             </div>
+            <Countdown target={KONFIG.acara.tanggalHariH} onDark />
           </div>
         </section>
-
-        {/* Marquee Dirgahayu */}
-        <div className="marquee bg-[#7a0100] text-white py-2.5 border-y border-white/10" aria-hidden>
-          <div className="marquee-track font-label-md text-label-md tracking-widest">
-            {Array.from({ length: 2 }).map((_, half) => (
-              <span key={half} className="inline-flex items-center gap-10">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <span key={i} className="inline-flex items-center gap-10">
-                    <span>DIRGAHAYU REPUBLIK INDONESIA KE-81</span>
-                    <span className="text-[#ffe16d]">★</span>
-                    <span>MERDEKA! 🇮🇩</span>
-                    <span className="text-[#ffe16d]">★</span>
-                  </span>
-                ))}
-              </span>
-            ))}
-          </div>
-        </div>
 
         {/* TENTANG */}
         {tentang.length > 0 && (
