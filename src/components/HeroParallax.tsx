@@ -117,17 +117,37 @@ export default function HeroParallax() {
       ref={stageRef}
       className="relative w-full overflow-hidden h-[420px] sm:h-[480px] md:h-auto md:aspect-[1717/916] md:max-h-[900px]"
     >
-      {/* L1 — ilustrasi (terjauh, gerak paling pelan) */}
+      {/* L1 — background ilustrasi bersih (terjauh, gerak paling pelan) */}
       <div data-depth="8" data-scroll="0.18" className="absolute -inset-4 will-change-transform">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/assets/hero-illustration.jpg"
-          alt="Ilustrasi perayaan HUT RI ke-81 warga Villa Gardenia"
+          src="/assets/hero-bg.jpg"
+          alt=""
           className="hero-kenburns w-full h-full object-cover object-[50%_30%]"
         />
       </div>
 
-      {/* L2 — pita melayang (desktop saja; di layar sempit menutupi logo ilustrasi) */}
+      {/* L2 — LOGO ASLI sebagai lapisan terpisah (parallax sungguhan) */}
+      <div data-depth="14" data-scroll="-0.05" className="absolute inset-0 pointer-events-none will-change-transform">
+        <div className="absolute left-1/2 -translate-x-1/2 top-[4%] md:top-[5%] w-full flex justify-center">
+          <div className="logo-float flex flex-col items-center gap-2 md:gap-4 px-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/logo-hut81-red.png"
+              alt="Logo HUT RI ke-81 — Indonesia Berdaulat, Adil dan Makmur"
+              className="w-[min(46vw,200px)] md:w-[24vw] md:max-w-[320px] h-auto drop-shadow-[0_6px_18px_rgba(255,255,255,0.7)]"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/assets/logo-paguyuban.png"
+              alt="Paguyuban Warga Villa Gardenia"
+              className="w-[min(74vw,320px)] md:w-[38vw] md:max-w-[540px] h-auto drop-shadow-[0_6px_18px_rgba(255,255,255,0.7)]"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* L3 — pita melayang (desktop saja; di layar sempit menutupi logo) */}
       <div data-depth="22" data-scroll="-0.1" className="absolute inset-0 pointer-events-none will-change-transform hidden md:block" aria-hidden>
         <Ribbon className="ribbon ribbon-left" />
         <Ribbon flip className="ribbon ribbon-right" />

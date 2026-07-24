@@ -168,6 +168,15 @@ body {
   50% { transform: scale(1.6); opacity: 0.95; }
 }
 
+/* Logo pada hero — mengambang sangat halus */
+.logo-float {
+  animation: logo-float 9s var(--ease-in-out) infinite alternate;
+}
+@keyframes logo-float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-9px); }
+}
+
 /* Balon merah-putih — elemen terpisah untuk lapisan parallax */
 .balloon-wrap {
   position: absolute;
@@ -287,7 +296,7 @@ body {
   .hero-kenburns { animation: none; }
   .twinkle { animation: none; opacity: 0; }
   .hero-confetti { display: none; }
-  .balloon-wrap, .ribbon { animation: none; }
+  .balloon-wrap, .ribbon, .logo-float { animation: none; }
 }
 
 @media print {

@@ -165,7 +165,7 @@ export default async function Home() {
             <a className="font-body-md text-body-md text-primary hover:underline" href={`https://wa.me/${s.whatsapp}`}>Kontak Panitia (WhatsApp)</a>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/logo-hut81.jpg" alt="Logo HUT RI ke-81" className="h-20 w-auto rounded-xl" />
+          <img src="/assets/logo-hut81-red.png" alt="Logo HUT RI ke-81" className="h-16 w-auto" />
         </div>
       </footer>
     </>
