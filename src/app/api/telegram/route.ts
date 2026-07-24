@@ -3,17 +3,31 @@ import { prisma } from "@/lib/db";
 import { getPublicData } from "@/lib/data";
 import { rupiah, parseAmount } from "@/lib/format";
 import { isAdmin, tgSend, tgEdit, tgAnswerCallback, escapeHtml } from "@/lib/telegram";
+import { sendBackup } from "@/lib/backup";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const HELP =
-  "🛠 <b>Perintah bendahara</b>\n\n" +
-  "<code>/keluar &lt;jumlah&gt; &lt;keterangan&gt;</code> — catat pengeluaran\n" +
-  "   contoh: <code>/keluar 2750000 Sewa Tenda</code>\n" +
-  "<code>/batalkeluar &lt;id&gt;</code> — hapus pengeluaran\n" +
+  "🇮🇩 <b>Bot Donasi HUT RI ke-81 — Villa Gardenia</b>\n\n" +
+  "Bot ini untuk <b>bendahara</b>: verifikasi donasi & catat keuangan. Semua yang tercatat langsung tampil di situs.\n\n" +
+  "<b>✅ Verifikasi donasi dari situs</b>\n" +
+  "Saat ada donasi via situs, bot mengirim notifikasi + tombol <b>Terima</b>/<b>Tolak</b>. Cek rekening, lalu tekan <b>Terima</b> agar tercatat.\n\n" +
+  "<b>➕ Catat donasi manual (tunai/di luar situs)</b>\n" +
+  "<code>/masuk &lt;jumlah&gt; &lt;nama&gt;</code>\n" +
+  "contoh: <code>/masuk 500000 Bpk Andi</code>  (nama boleh dikosongkan)\n\n" +
+  "<b>➖ Catat pengeluaran</b>\n" +
+  "<code>/keluar &lt;jumlah&gt; &lt;keterangan&gt;</code>\n" +
+  "contoh: <code>/keluar 2750000 Sewa Tenda</code>\n\n" +
+  "<b>🗑 Hapus data</b> (id tampil di pesan konfirmasi)\n" +
+  "<code>/batalmasuk &lt;id&gt;</code> — hapus donasi\n" +
+  "<code>/batalkeluar &lt;id&gt;</code> — hapus pengeluaran\n\n" +
+  "<b>📊 Lainnya</b>\n" +
   "<code>/rekap</code> — ringkasan dana\n" +
-  "<code>/id</code> — lihat chat id Anda";
+  "<code>/backup</code> — kirim file Excel laporan sekarang\n" +
+  "<code>/id</code> — lihat chat id Anda\n\n" +
+  "💡 File Excel juga dikirim <b>otomatis setiap hari</b>.\n" +
+  "🌐 Panel admin web (edit rekening, dll): buka <b>/admin</b> di situs.";
 
 export async function POST(req: NextRequest) {
   const secret = req.headers.get("x-telegram-bot-api-secret-token");
@@ -104,6 +118,45 @@ async function handleMessage(msg: any) {
   // Perintah khusus bendahara (admin)
   const admin = isAdmin(fromId) || isAdmin(chatId);
   if (!admin) return; // abaikan diam-diam untuk non-admin
+
+  if (text.startsWith("/backup")) {
+    await tgSend(chatId, "⏳ Menyiapkan file Excel…");
+    const n = await sendBackup([chatId], "📎 Backup laporan keuangan (diminta manual)");
+    if (n === 0) await tgSend(chatId, "Gagal mengirim file. Pastikan token bot benar & bot boleh mengirim dokumen.");
+    return;
+  }
+
+  if (text.startsWith("/masuk")) {
+    const rest = text.replace(/^\/masuk(?:@\w+)?\s*/, "").trim();
+    const parts = rest.split(/\s+/).filter(Boolean);
+    const amount = parseAmount(parts[0] || "");
+    const nama = parts.slice(1).join(" ").trim().slice(0, 60);
+    if (amount < 1) {
+      await tgSend(chatId, "Format: <code>/masuk &lt;jumlah&gt; &lt;nama&gt;</code>\nContoh: <code>/masuk 500000 Bpk Andi</code>\n(nama boleh dikosongkan)");
+      return;
+    }
+    const d = await prisma.donation.create({
+      data: { name: nama || null, amount, status: "approved", decidedAt: new Date(), note: "input manual" },
+    });
+    await tgSend(chatId, `✅ Donasi dicatat (#${d.id}):\n${escapeHtml(nama || "Hamba Allah")} — <b>${rupiah(amount)}</b>`);
+    return;
+  }
+
+  if (text.startsWith("/batalmasuk")) {
+    const id = Number(text.replace(/^\/batalmasuk(?:@\w+)?/, "").trim());
+    if (!id) {
+      await tgSend(chatId, "Format: <code>/batalmasuk &lt;id&gt;</code>");
+      return;
+    }
+    const d = await prisma.donation.findUnique({ where: { id } });
+    if (!d) {
+      await tgSend(chatId, `Donasi #${id} tidak ditemukan.`);
+      return;
+    }
+    await prisma.donation.delete({ where: { id } });
+    await tgSend(chatId, `🗑 Donasi #${id} dihapus (${escapeHtml(d.name || "Hamba Allah")} — ${rupiah(d.amount)}).`);
+    return;
+  }
 
   if (text.startsWith("/keluar")) {
     const m = text.match(/^\/keluar(?:@\w+)?\s+(\S+)\s+([\s\S]+)$/);

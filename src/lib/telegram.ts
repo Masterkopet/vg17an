@@ -53,6 +53,29 @@ export async function tgSendToAdmins(text: string, replyMarkup?: unknown): Promi
   return out;
 }
 
+export async function tgSendDocument(
+  chatId: string | number,
+  filename: string,
+  buffer: Uint8Array<ArrayBuffer>,
+  caption?: string
+): Promise<any> {
+  if (!API) return { ok: false, error: "TELEGRAM_BOT_TOKEN belum diset" };
+  try {
+    const form = new FormData();
+    form.append("chat_id", String(chatId));
+    if (caption) form.append("caption", caption);
+    form.append(
+      "document",
+      new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }),
+      filename
+    );
+    const res = await fetch(`${API}/sendDocument`, { method: "POST", body: form });
+    return await res.json();
+  } catch (e) {
+    return { ok: false, error: String(e) };
+  }
+}
+
 export function tgEdit(chatId: string | number, messageId: string | number, text: string): Promise<any> {
   return call("editMessageText", {
     chat_id: chatId,

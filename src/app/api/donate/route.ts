@@ -6,7 +6,25 @@ import { tgSendToAdmins, telegramConfigured, escapeHtml } from "@/lib/telegram";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+// Anti-spam sederhana per-IP: cegah bendahara dibanjiri notifikasi palsu.
+const hits = new Map<string, number[]>();
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const WINDOW = 10 * 60 * 1000;
+  const MAX = 8;
+  const arr = (hits.get(ip) || []).filter((t) => now - t < WINDOW);
+  arr.push(now);
+  hits.set(ip, arr);
+  if (hits.size > 5000) for (const [k, v] of hits) if (v.every((t) => now - t > WINDOW)) hits.delete(k);
+  return arr.length > MAX;
+}
+
 export async function POST(req: NextRequest) {
+  const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || req.headers.get("x-real-ip") || "unknown";
+  if (rateLimited(ip)) {
+    return NextResponse.json({ ok: false, error: "Terlalu banyak percobaan. Coba lagi beberapa menit lagi." }, { status: 429 });
+  }
+
   let body: { name?: unknown; amount?: unknown };
   try {
     body = await req.json();

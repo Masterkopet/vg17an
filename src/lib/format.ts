@@ -33,14 +33,14 @@ export function tglID(d: Date | string | null | undefined): string {
   if (!d) return "—";
   const dt = d instanceof Date ? d : new Date(d);
   if (isNaN(dt.getTime())) return "—";
-  return dt.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+  return dt.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" });
 }
 
 export function waktuID(d: Date | string | null | undefined): string {
   if (!d) return "";
   const dt = d instanceof Date ? d : new Date(d);
   if (isNaN(dt.getTime())) return "";
-  return dt.toLocaleString("id-ID", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" });
+  return dt.toLocaleString("id-ID", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short", timeZone: "Asia/Jakarta" });
 }
 
 export function inisial(name: string | null | undefined): string {
@@ -51,4 +51,12 @@ export function inisial(name: string | null | undefined): string {
     .filter(Boolean)
     .slice(0, 2);
   return parts.map((w) => Array.from(w)[0]).join("").toUpperCase() || "?";
+}
+
+// Waktu Indonesia Barat (WIB) — independen dari zona waktu server/container.
+export function wibHour(): number {
+  return Number(new Intl.DateTimeFormat("en-GB", { hour: "2-digit", hourCycle: "h23", timeZone: "Asia/Jakarta" }).format(new Date()));
+}
+export function wibDate(): string {
+  return new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Asia/Jakarta" }).format(new Date());
 }
