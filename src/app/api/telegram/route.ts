@@ -25,13 +25,15 @@ const HELP =
   "Saat ada donasi, bot mengirim notifikasi (beserta <b>foto bukti transfer</b> bila donatur melampirkan) + tombol <b>Terima</b>/<b>Tolak</b>.\n" +
   "• <b>Terima</b>: sekali tekan, langsung tercatat.\n" +
   "• <b>Tolak</b>: bot minta <b>konfirmasi sekali lagi</b> agar tidak salah pencet.\n\n" +
-  "<b>➕ Catat donasi manual (tunai/di luar situs)</b>\n" +
-  "<code>/masuk &lt;jumlah&gt; &lt;nama&gt;</code>\n" +
-  "contoh: <code>/masuk 500000 Bpk Andi</code>  (nama boleh dikosongkan)\n\n" +
-  "<b>➖ Catat pengeluaran</b>\n" +
-  "<code>/keluar &lt;jumlah&gt; &lt;keterangan&gt;</code>\n" +
+  "<b>➕ Catat manual</b> — untuk warga yang transfer langsung / bayar tunai tanpa lewat situs\n" +
+  "<code>/masuk &lt;jumlah&gt; &lt;nama&gt;</code> — catat donasi\n" +
+  "contoh: <code>/masuk 500000 Bpk Andi</code>  (nama boleh dikosongkan)\n" +
+  "<code>/keluar &lt;jumlah&gt; &lt;keterangan&gt;</code> — catat pengeluaran\n" +
   "contoh: <code>/keluar 2750000 Sewa Tenda</code>\n\n" +
-  "<b>🗑 Hapus data</b> (id tampil di pesan konfirmasi)\n" +
+  "<b>📒 Lihat & koreksi data</b>\n" +
+  "<code>/daftar</code> — daftar data terbaru <b>beserta id-nya</b>\n" +
+  "<code>/ubahmasuk &lt;id&gt; &lt;jumlah&gt; [nama baru]</code> — ubah donasi\n" +
+  "<code>/ubahkeluar &lt;id&gt; &lt;jumlah&gt; [keterangan]</code> — ubah pengeluaran\n" +
   "<code>/batalmasuk &lt;id&gt;</code> — hapus donasi\n" +
   "<code>/batalkeluar &lt;id&gt;</code> — hapus pengeluaran\n\n" +
   "<b>📊 Lainnya</b>\n" +
@@ -182,6 +184,86 @@ async function handleMessage(msg: any) {
       data: { name: nama || null, amount, status: "approved", decidedAt: new Date(), note: "input manual" },
     });
     await tgSend(chatId, `✅ Donasi dicatat (#${d.id}):\n${escapeHtml(nama || "Hamba Allah")} — <b>${rupiah(amount)}</b>`);
+    return;
+  }
+
+  if (text.startsWith("/daftar") || text.startsWith("/list")) {
+    const [dons, exps] = await Promise.all([
+      prisma.donation.findMany({ orderBy: { id: "desc" }, take: 8 }),
+      prisma.expense.findMany({ orderBy: { id: "desc" }, take: 8 }),
+    ]);
+    const st: Record<string, string> = { approved: "✅", pending: "⏳", rejected: "❌" };
+    const dLines = dons.length
+      ? dons.map((d) => `#${d.id} ${st[d.status] || ""} ${escapeHtml(d.name || "Hamba Allah")} — ${rupiah(d.amount)}`).join("\n")
+      : "(belum ada)";
+    const eLines = exps.length
+      ? exps.map((x) => `#${x.id} ${escapeHtml(x.description)} — ${rupiah(x.amount)}`).join("\n")
+      : "(belum ada)";
+    await tgSend(
+      chatId,
+      `📒 <b>Data terbaru</b>\n\n<b>Donasi</b> (✅ diterima · ⏳ menunggu · ❌ ditolak)\n${dLines}\n\n<b>Pengeluaran</b>\n${eLines}\n\n` +
+        `Ubah: <code>/ubahmasuk id jumlah [nama]</code> · <code>/ubahkeluar id jumlah [ket]</code>\n` +
+        `Hapus: <code>/batalmasuk id</code> · <code>/batalkeluar id</code>`
+    );
+    return;
+  }
+
+  if (text.startsWith("/ubahmasuk")) {
+    const m = text.match(/^\/ubahmasuk(?:@\w+)?\s+(\d+)\s+(\S+)(?:\s+([\s\S]+))?$/);
+    if (!m) {
+      await tgSend(chatId, "Format: <code>/ubahmasuk &lt;id&gt; &lt;jumlah&gt; [nama baru]</code>\nContoh: <code>/ubahmasuk 5 600000 Bpk Andi</code>\n(nama dikosongkan = tidak diubah). Lihat id lewat <code>/daftar</code>.");
+      return;
+    }
+    const id = Number(m[1]);
+    const amount = parseAmount(m[2]);
+    const nama = (m[3] || "").trim().slice(0, 60);
+    if (amount < 1) {
+      await tgSend(chatId, "Jumlah tidak valid. Contoh: <code>/ubahmasuk 5 600000</code>");
+      return;
+    }
+    const d = await prisma.donation.findUnique({ where: { id } });
+    if (!d) {
+      await tgSend(chatId, `Donasi #${id} tidak ditemukan. Cek <code>/daftar</code>.`);
+      return;
+    }
+    const updated = await prisma.donation.update({
+      where: { id },
+      data: { amount, ...(nama ? { name: nama } : {}) },
+    });
+    await tgSend(
+      chatId,
+      `✏️ Donasi #${id} diubah:\n` +
+        `${escapeHtml(d.name || "Hamba Allah")} — ${rupiah(d.amount)}\n→ ${escapeHtml(updated.name || "Hamba Allah")} — <b>${rupiah(updated.amount)}</b>`
+    );
+    return;
+  }
+
+  if (text.startsWith("/ubahkeluar")) {
+    const m = text.match(/^\/ubahkeluar(?:@\w+)?\s+(\d+)\s+(\S+)(?:\s+([\s\S]+))?$/);
+    if (!m) {
+      await tgSend(chatId, "Format: <code>/ubahkeluar &lt;id&gt; &lt;jumlah&gt; [keterangan]</code>\nContoh: <code>/ubahkeluar 3 300000 Sewa Sound</code>\n(keterangan dikosongkan = tidak diubah). Lihat id lewat <code>/daftar</code>.");
+      return;
+    }
+    const id = Number(m[1]);
+    const amount = parseAmount(m[2]);
+    const desc = (m[3] || "").trim().slice(0, 100);
+    if (amount < 1) {
+      await tgSend(chatId, "Jumlah tidak valid. Contoh: <code>/ubahkeluar 3 300000</code>");
+      return;
+    }
+    const x = await prisma.expense.findUnique({ where: { id } });
+    if (!x) {
+      await tgSend(chatId, `Pengeluaran #${id} tidak ditemukan. Cek <code>/daftar</code>.`);
+      return;
+    }
+    const updated = await prisma.expense.update({
+      where: { id },
+      data: { amount, ...(desc ? { description: desc } : {}) },
+    });
+    await tgSend(
+      chatId,
+      `✏️ Pengeluaran #${id} diubah:\n${escapeHtml(x.description)} — ${rupiah(x.amount)}\n→ ${escapeHtml(updated.description)} — <b>${rupiah(updated.amount)}</b>`
+    );
     return;
   }
 

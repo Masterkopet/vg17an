@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { KONFIG } from "@/lib/config";
 import { rupiah } from "@/lib/format";
+import { compressImage } from "@/lib/compressImage";
 
 const presets = KONFIG.nominalCepat;
 
@@ -18,6 +19,7 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
   const [proof, setProof] = useState<File | null>(null);
   const [proofUrl, setProofUrl] = useState<string | null>(null);
   const [proofSent, setProofSent] = useState(false);
+  const [compressing, setCompressing] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -30,22 +32,35 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
     return () => URL.revokeObjectURL(url);
   }, [proof]);
 
-  function pilihBukti(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0] || null;
+  async function pilihBukti(e: React.ChangeEvent<HTMLInputElement>) {
+    const inputEl = e.target;
+    const f = inputEl.files?.[0] || null;
     if (!f) return;
-    if (!["image/jpeg", "image/png", "image/webp"].includes(f.type)) {
-      setMsg("Bukti harus berupa foto (JPG/PNG/WebP)");
+    if (!f.type.startsWith("image/")) {
+      setMsg("Bukti harus berupa foto/gambar");
       setTimeout(() => setMsg(""), 3000);
-      e.target.value = "";
+      inputEl.value = "";
       return;
     }
-    if (f.size > 5 * 1024 * 1024) {
-      setMsg("Ukuran foto maksimal 5 MB");
-      setTimeout(() => setMsg(""), 3000);
-      e.target.value = "";
-      return;
+    setCompressing(true);
+    try {
+      // Foto besar dikompres otomatis di HP donatur — tanpa ribet.
+      const hasil = await compressImage(f);
+      if (!["image/jpeg", "image/png", "image/webp"].includes(hasil.type)) {
+        setMsg("Format foto tidak didukung — pakai JPG/PNG");
+        setTimeout(() => setMsg(""), 3000);
+        return;
+      }
+      if (hasil.size > 5 * 1024 * 1024) {
+        setMsg("Foto terlalu besar. Coba foto/screenshot lain");
+        setTimeout(() => setMsg(""), 3000);
+        return;
+      }
+      setProof(hasil);
+    } finally {
+      setCompressing(false);
+      inputEl.value = "";
     }
-    setProof(f);
   }
 
   function pilih(v: number) {
@@ -246,14 +261,14 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
                     <span className="material-symbols-outlined text-primary" aria-hidden>photo_camera</span>
                     <span className="font-label-md text-label-md text-on-surface">Bukti Transfer (opsional)</span>
                   </div>
-                  <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={pilihBukti} />
+                  <input ref={fileRef} type="file" accept="image/*" hidden onChange={pilihBukti} />
                   {proofUrl ? (
                     <div className="flex items-center gap-3">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={proofUrl} alt="Pratinjau bukti transfer" className="w-16 h-16 object-cover rounded-xl border border-outline-variant" />
                       <div className="min-w-0 flex-1">
                         <p className="font-label-md text-label-md text-on-surface truncate">{proof?.name}</p>
-                        <p className="font-label-md text-label-md text-secondary">Akan diteruskan ke bendahara.</p>
+                        <p id="proof-size" className="font-label-md text-label-md text-secondary">{proof ? Math.max(1, Math.round(proof.size / 1024)) + " KB — " : ""}akan diteruskan ke bendahara.</p>
                       </div>
                       <button type="button" onClick={() => { setProof(null); if (fileRef.current) fileRef.current.value = ""; }} aria-label="Hapus bukti" className="text-secondary hover:text-error press">
                         <span className="material-symbols-outlined" aria-hidden>delete</span>
@@ -263,11 +278,14 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
                     <button
                       type="button"
                       onClick={() => fileRef.current?.click()}
-                      className="w-full flex items-center justify-center gap-2 border border-dashed border-outline-variant rounded-xl py-3 text-secondary hover:text-primary hover:border-primary press font-label-md text-label-md"
+                      disabled={compressing}
+                      className="w-full flex items-center justify-center gap-2 border border-dashed border-outline-variant rounded-xl py-3 text-secondary hover:text-primary hover:border-primary press font-label-md text-label-md disabled:opacity-60"
                     >
-                      <span className="material-symbols-outlined" aria-hidden>add_photo_alternate</span> Lampirkan foto bukti transfer
+                      <span className="material-symbols-outlined" aria-hidden>{compressing ? "hourglass_top" : "add_photo_alternate"}</span>
+                      {compressing ? "Memproses foto…" : "Lampirkan foto bukti transfer"}
                     </button>
                   )}
+                  <p className="mt-2 font-label-md text-label-md text-secondary">Tidak wajib — foto besar otomatis diperkecil.</p>
                 </div>
 
                 <p className="font-body-md text-body-md text-secondary text-center mb-4">
