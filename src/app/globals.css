@@ -135,6 +135,75 @@ body {
   }
 }
 
+/* ===== Tema Kemerdekaan ===== */
+
+/* Garis bendera merah-putih tipis (di bawah navbar) */
+.flag-stripe {
+  height: 6px;
+  background: linear-gradient(to bottom, #d3170a 0 50%, #ffffff 50% 100%);
+}
+
+/* Umbul-umbul (bunting) segitiga */
+.bunting {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  transform-origin: top center;
+  animation: sway 5s var(--ease-in-out) infinite alternate;
+}
+.bunting span {
+  width: 26px;
+  height: 34px;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  flex: none;
+}
+.bunting span:nth-child(odd) { background: #ffffff; }
+.bunting span:nth-child(even) { background: #ffd7d0; }
+@keyframes sway {
+  from { transform: rotate(-1.2deg); }
+  to { transform: rotate(1.2deg); }
+}
+
+/* Marquee "Dirgahayu" — gerak konstan, linear */
+.marquee { overflow: hidden; }
+.marquee-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5rem;
+  white-space: nowrap;
+  padding-left: 2.5rem;
+  animation: marquee 22s linear infinite;
+  will-change: transform;
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* Konfeti merah-putih (saat donasi sukses) */
+.confetti-piece {
+  position: fixed;
+  top: -5vh;
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+  opacity: 0.95;
+  pointer-events: none;
+  z-index: 130;
+  animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+  to {
+    transform: translateY(112vh) rotate(720deg);
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bunting { animation: none; }
+  .marquee-track { animation: none; padding-left: 0; }
+  .confetti-piece { display: none; }
+}
+
 @media print {
   header, footer, #tentang, #kegiatan, #donasi, #donatur,
   #btn-print, #share-wa, #share-copy, #pay-modal, #toast {

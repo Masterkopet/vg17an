@@ -1,9 +1,44 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { KONFIG } from "@/lib/config";
 import { rupiah } from "@/lib/format";
 import { compressImage } from "@/lib/compressImage";
+
+// Konfeti merah-putih — momen langka (donasi sukses), pantas diberi perayaan kecil.
+function Confetti() {
+  const pieces = useMemo(
+    () =>
+      Array.from({ length: 36 }, (_, i) => ({
+        left: Math.random() * 100,
+        delay: Math.random() * 0.6,
+        dur: 2.2 + Math.random() * 1.4,
+        color: i % 3 === 0 ? "#ffffff" : i % 3 === 1 ? "#d3170a" : "#ffe16d",
+        rot: Math.random() * 360,
+        w: 8 + Math.random() * 5,
+      })),
+    []
+  );
+  return (
+    <div aria-hidden>
+      {pieces.map((p, i) => (
+        <span
+          key={i}
+          className="confetti-piece"
+          style={{
+            left: `${p.left}vw`,
+            background: p.color,
+            width: p.w,
+            height: p.w * 1.6,
+            transform: `rotate(${p.rot}deg)`,
+            animationDuration: `${p.dur}s`,
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
 const presets = KONFIG.nominalCepat;
 
@@ -195,6 +230,7 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
 
             {status === "done" ? (
               <div className="text-center py-6">
+                <Confetti />
                 <span className="material-symbols-outlined text-primary text-5xl mb-3" style={{ fontVariationSettings: "'FILL' 1" }} aria-hidden>check_circle</span>
                 <h3 className="font-headline-sm text-headline-sm text-on-surface mb-2">Terima kasih! 🇮🇩</h3>
                 <p className="font-body-md text-body-md text-secondary">

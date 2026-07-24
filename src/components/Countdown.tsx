@@ -19,7 +19,7 @@ const num = "font-headline-md text-headline-md text-primary tabular-nums";
 const lbl = "font-label-md text-label-md text-secondary";
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export default function Countdown({ target }: { target: string }) {
+export default function Countdown({ target, onDark = false }: { target: string; onDark?: boolean }) {
   const targetMs = new Date(target).getTime();
   const [t, setT] = useState(() => diffParts(targetMs));
 
@@ -30,7 +30,7 @@ export default function Countdown({ target }: { target: string }) {
 
   return (
     <div className="w-full max-w-md">
-      <p className="font-label-md text-label-md text-secondary mb-2">
+      <p className={`font-label-md text-label-md mb-2 ${onDark ? "text-white/85" : "text-secondary"}`}>
         {t.habis ? "Dirgahayu Republik Indonesia! 🇮🇩" : "Menuju Hari-H"}
       </p>
       <div className="grid grid-cols-4 gap-2 md:gap-3">
