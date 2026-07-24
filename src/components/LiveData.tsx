@@ -46,6 +46,27 @@ function useCountUp(target: number, active: boolean, duration = 1200): number {
 
 export type KegiatanItem = { tanggal: string; judul: string; deskripsi: string };
 
+const PAGE_SIZE = 10;
+
+function Pager({ cur, max, onPage }: { cur: number; max: number; onPage: (p: number) => void }) {
+  if (max <= 1) return null;
+  const btn =
+    "inline-flex items-center gap-1 px-4 py-2 rounded-full border border-outline-variant font-label-md text-label-md text-on-surface press hover:border-primary hover:text-primary disabled:opacity-40 disabled:pointer-events-none";
+  return (
+    <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-outline-variant">
+      <button type="button" className={btn} disabled={cur <= 1} onClick={() => onPage(cur - 1)} aria-label="Halaman sebelumnya">
+        <span className="material-symbols-outlined text-base" aria-hidden>chevron_left</span> Sebelumnya
+      </button>
+      <span className="font-label-md text-label-md text-secondary tabular-nums" aria-live="polite">
+        Halaman {cur} / {max}
+      </span>
+      <button type="button" className={btn} disabled={cur >= max} onClick={() => onPage(cur + 1)} aria-label="Halaman berikutnya">
+        Berikutnya <span className="material-symbols-outlined text-base" aria-hidden>chevron_right</span>
+      </button>
+    </div>
+  );
+}
+
 export default function LiveData({
   initial,
   hari,
@@ -60,6 +81,8 @@ export default function LiveData({
   const [data, setData] = useState<PublicData>(initial);
   const [revealed, setRevealed] = useState(false);
   const [toast, setToast] = useState("");
+  const [dPage, setDPage] = useState(1);
+  const [tPage, setTPage] = useState(1);
   const progressRef = useRef<HTMLDivElement>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -126,6 +149,15 @@ export default function LiveData({
   ].sort((a, b) => new Date(b.tanggal).getTime() - new Date(a.tanggal).getTime());
 
   const shareText = `Ayo dukung perayaan HUT RI ke-81 di Villa Gardenia! 🇮🇩 Terkumpul ${rupiah(data.totalPemasukan)} dari target ${rupiah(data.target)}. Ikut berdonasi di sini:`;
+
+  // Paginasi client-side (10/halaman) — halaman otomatis ter-clamp saat data berubah.
+  const dMax = Math.max(1, Math.ceil(data.donatur.length / PAGE_SIZE));
+  const dCur = Math.min(dPage, dMax);
+  const donaturRows = data.donatur.slice((dCur - 1) * PAGE_SIZE, dCur * PAGE_SIZE);
+
+  const tMax = Math.max(1, Math.ceil(transaksi.length / PAGE_SIZE));
+  const tCur = Math.min(tPage, tMax);
+  const transaksiRows = transaksi.slice((tCur - 1) * PAGE_SIZE, tCur * PAGE_SIZE);
 
   return (
     <>
@@ -224,19 +256,36 @@ export default function LiveData({
           {data.donatur.length === 0 ? (
             <p className="text-center text-secondary font-body-md text-body-md py-8">Belum ada donasi tercatat. Jadilah yang pertama! 🇮🇩</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {data.donatur.map((x) => (
-                <div key={x.id} className="flex items-start gap-3 bg-surface-container-lowest border border-outline-variant rounded-2xl p-4">
-                  <div className="shrink-0 w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center font-headline-sm text-headline-sm">{inisial(x.nama)}</div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-body-md text-body-md text-on-surface font-semibold truncate">{x.nama}</span>
-                      <span className="font-label-md text-label-md text-primary whitespace-nowrap tabular-nums">{rupiah(x.jumlah)}</span>
-                    </div>
-                    <div className="font-label-md text-label-md text-secondary">{tglID(x.tanggal)}{x.catatan ? ` · “${x.catatan}”` : ""}</div>
-                  </div>
-                </div>
-              ))}
+            <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant overflow-hidden max-w-3xl mx-auto">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-surface-container-low">
+                      <th className="px-6 py-4 font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Tanggal</th>
+                      <th className="px-6 py-4 font-label-md text-label-md text-on-surface-variant">Donatur</th>
+                      <th className="px-6 py-4 font-label-md text-label-md text-on-surface-variant text-right">Nominal</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant">
+                    {donaturRows.map((x) => (
+                      <tr key={x.id}>
+                        <td className="px-6 py-4 font-body-md text-body-md text-secondary whitespace-nowrap align-top">{tglID(x.tanggal)}</td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="shrink-0 w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-label-md text-label-md font-bold">{inisial(x.nama)}</div>
+                            <div className="min-w-0">
+                              <div className="font-body-md text-body-md text-on-surface font-semibold truncate">{x.nama}</div>
+                              {x.catatan && <div className="font-label-md text-label-md text-secondary truncate">“{x.catatan}”</div>}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 font-body-md text-body-md text-primary text-right whitespace-nowrap tabular-nums align-top">{rupiah(x.jumlah)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <Pager cur={dCur} max={dMax} onPage={setDPage} />
             </div>
           )}
         </div>
@@ -275,8 +324,8 @@ export default function LiveData({
                   {transaksi.length === 0 ? (
                     <tr><td colSpan={4} className="px-6 py-8 text-center text-secondary">Belum ada transaksi.</td></tr>
                   ) : (
-                    transaksi.map((t, i) => (
-                      <tr key={i}>
+                    transaksiRows.map((t, i) => (
+                      <tr key={(tCur - 1) * PAGE_SIZE + i}>
                         <td className="px-6 py-4 font-body-md text-body-md text-secondary whitespace-nowrap">{tglID(t.tanggal)}</td>
                         <td className="px-6 py-4 font-body-md text-body-md text-on-surface">{t.ket}</td>
                         <td className="px-6 py-4 font-body-md text-body-md text-secondary">{t.kat}</td>
@@ -287,6 +336,7 @@ export default function LiveData({
                 </tbody>
               </table>
             </div>
+            <Pager cur={tCur} max={tMax} onPage={setTPage} />
           </div>
         </div>
       </section>
