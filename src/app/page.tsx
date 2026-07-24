@@ -36,43 +36,79 @@ export default async function Home() {
       <SiteHeader />
 
       <main className="w-full">
-        {/* HERO — logo resmi HUT RI 81 sebagai background penuh */}
-        <section className="relative w-full overflow-hidden scroll-mt-24 text-white" id="beranda">
-          <div className="absolute inset-0 z-0" aria-hidden>
+        {/* HERO — ilustrasi perayaan sebagai panggung, dipecah jadi lapisan animasi */}
+        <section className="relative w-full scroll-mt-24" id="beranda">
+          {/* Lapisan 1: ilustrasi (Ken Burns pelan) */}
+          <div className="relative w-full overflow-hidden h-[420px] sm:h-[480px] md:h-[560px] lg:h-[640px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/logo-hut81.jpg" alt="" className="w-full h-full object-cover object-center" />
-            {/* overlay merah agar teks tetap terbaca di atas logo */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#b60c00]/75 via-[#a80d00]/60 to-[#7a0100]/90" />
-          </div>
+            <img
+              src="/assets/hero-illustration.jpg"
+              alt="Ilustrasi perayaan HUT RI ke-81 warga Villa Gardenia"
+              className="hero-kenburns w-full h-full object-cover object-[50%_30%]"
+            />
 
-          {/* umbul-umbul */}
-          <div className="relative z-10 bunting" aria-hidden>
-            {Array.from({ length: 40 }).map((_, i) => (
-              <span key={i} />
-            ))}
-          </div>
-
-          <div className="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-12 pb-16 md:pt-20 md:pb-28 flex flex-col items-center text-center">
-            <span className="inline-flex items-center gap-2 mb-stack-md px-4 py-1.5 rounded-full bg-white/15 text-white font-label-md text-label-md backdrop-blur-sm">
-              <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }} aria-hidden>flag</span>
-              HUT RI ke-81 · 17 Agustus 2026
-            </span>
-            <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl mb-stack-md max-w-4xl">
-              Rayakan Kemerdekaan di <span className="text-[#ffe16d]">Villa Gardenia!</span>
-            </h1>
-            <p className="font-body-lg text-body-lg text-white/90 max-w-2xl mb-stack-lg">
-              Mari bergotong royong menyukseskan perayaan HUT RI ke-81. Setiap donasi Anda membawa kita lebih dekat ke acara yang meriah dan tak terlupakan.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center gap-3 mb-stack-lg">
-              <a className="inline-flex items-center justify-center bg-white text-primary font-bold font-label-md text-label-md px-8 py-4 rounded-full press glow-red-hover text-lg" href="#donasi">
-                Donasi Sekarang
-                <span className="material-symbols-outlined ml-2 text-base" aria-hidden>arrow_forward</span>
-              </a>
-              <a className="inline-flex items-center justify-center bg-transparent text-white border border-white/60 font-label-md text-label-md px-8 py-4 rounded-full hover:bg-white/10 press text-lg" href="#laporan">
-                Lihat Transparansi Dana
-              </a>
+            {/* Lapisan 2: kelip di atas kembang api ilustrasi */}
+            <div aria-hidden>
+              {[
+                { left: "26%", top: "13%", delay: "0s" },
+                { left: "13%", top: "7%", delay: "0.9s" },
+                { left: "72%", top: "9%", delay: "0.4s" },
+                { left: "80%", top: "24%", delay: "1.4s" },
+                { left: "66%", top: "19%", delay: "2s" },
+              ].map((t, i) => (
+                <span key={i} className="twinkle" style={{ left: t.left, top: t.top, animationDelay: t.delay }} />
+              ))}
             </div>
-            <Countdown target={KONFIG.acara.tanggalHariH} onDark />
+
+            {/* Lapisan 3: konfeti pelan terus melayang */}
+            <div aria-hidden>
+              {[
+                { left: "6%", delay: "0s", dur: "11s", c: "#d3170a" },
+                { left: "16%", delay: "3s", dur: "13s", c: "#ffffff" },
+                { left: "27%", delay: "6s", dur: "10s", c: "#ffe16d" },
+                { left: "38%", delay: "1.5s", dur: "12s", c: "#ffffff" },
+                { left: "52%", delay: "4.5s", dur: "14s", c: "#d3170a" },
+                { left: "63%", delay: "8s", dur: "11s", c: "#ffe16d" },
+                { left: "74%", delay: "2.5s", dur: "13s", c: "#d3170a" },
+                { left: "85%", delay: "5.5s", dur: "10s", c: "#ffffff" },
+                { left: "93%", delay: "7s", dur: "12s", c: "#d3170a" },
+              ].map((p, i) => (
+                <span
+                  key={i}
+                  className="hero-confetti"
+                  style={{ left: p.left, background: p.c, animationDelay: p.delay, animationDuration: p.dur }}
+                />
+              ))}
+            </div>
+
+            {/* Peralihan halus ke konten di bawah */}
+            <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-b from-transparent to-surface" aria-hidden />
+          </div>
+
+          {/* Lapisan 4: kartu konten — countdown & info menyatu rapi */}
+          <div className="relative z-20 -mt-24 md:-mt-32 px-margin-mobile md:px-margin-desktop">
+            <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-b from-[#c00e00] to-[#8f0100] text-white shadow-2xl border border-white/15 px-6 py-8 md:px-12 md:py-10 flex flex-col items-center text-center">
+              <span className="inline-flex items-center gap-2 mb-stack-md px-4 py-1.5 rounded-full bg-white/15 text-white font-label-md text-label-md backdrop-blur-sm">
+                <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }} aria-hidden>flag</span>
+                HUT RI ke-81 · 17 Agustus 2026
+              </span>
+              <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-lg md:text-headline-lg mb-stack-md max-w-3xl">
+                Rayakan Kemerdekaan di <span className="text-[#ffe16d]">Villa Gardenia!</span>
+              </h1>
+              <p className="font-body-lg text-body-lg text-white/90 max-w-2xl mb-stack-lg">
+                Mari bergotong royong menyukseskan perayaan HUT RI ke-81. Setiap donasi Anda membawa kita lebih dekat ke acara yang meriah dan tak terlupakan.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center gap-3 mb-stack-lg">
+                <a className="inline-flex items-center justify-center bg-white text-primary font-bold font-label-md text-label-md px-8 py-4 rounded-full press glow-red-hover text-lg" href="#donasi">
+                  Donasi Sekarang
+                  <span className="material-symbols-outlined ml-2 text-base" aria-hidden>arrow_forward</span>
+                </a>
+                <a className="inline-flex items-center justify-center bg-transparent text-white border border-white/60 font-label-md text-label-md px-8 py-4 rounded-full hover:bg-white/10 press text-lg" href="#laporan">
+                  Lihat Transparansi Dana
+                </a>
+              </div>
+              <Countdown target={KONFIG.acara.tanggalHariH} onDark />
+            </div>
           </div>
         </section>
 

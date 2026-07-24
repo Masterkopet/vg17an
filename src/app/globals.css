@@ -143,25 +143,46 @@ body {
   background: linear-gradient(to bottom, #d3170a 0 50%, #ffffff 50% 100%);
 }
 
-/* Umbul-umbul (bunting) segitiga */
-.bunting {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  transform-origin: top center;
-  animation: sway 5s var(--ease-in-out) infinite alternate;
+/* Hero ilustrasi: gerak zoom pelan (Ken Burns) — ilustrasi terasa "hidup" */
+.hero-kenburns {
+  animation: kenburns 22s var(--ease-in-out) infinite alternate;
+  will-change: transform;
 }
-.bunting span {
-  width: 26px;
-  height: 34px;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  flex: none;
+@keyframes kenburns {
+  from { transform: scale(1) translateY(0); }
+  to { transform: scale(1.06) translateY(-1.5%); }
 }
-.bunting span:nth-child(odd) { background: #ffffff; }
-.bunting span:nth-child(even) { background: #ffd7d0; }
-@keyframes sway {
-  from { transform: rotate(-1.2deg); }
-  to { transform: rotate(1.2deg); }
+
+/* Kelip di atas kembang api ilustrasi */
+.twinkle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,225,109,0.55) 45%, transparent 70%);
+  animation: twinkle 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes twinkle {
+  0%, 100% { transform: scale(0.5); opacity: 0.15; }
+  50% { transform: scale(1.6); opacity: 0.95; }
+}
+
+/* Konfeti pelan yang terus melayang di dalam hero */
+.hero-confetti {
+  position: absolute;
+  top: -6%;
+  width: 8px;
+  height: 13px;
+  border-radius: 2px;
+  opacity: 0.85;
+  pointer-events: none;
+  animation: hero-confetti-fall linear infinite;
+  will-change: transform;
+}
+@keyframes hero-confetti-fall {
+  from { transform: translateY(0) rotate(0deg); }
+  to { transform: translateY(1000px) rotate(540deg); }
 }
 
 /* Konfeti merah-putih (saat donasi sukses) */
@@ -184,8 +205,10 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bunting { animation: none; }
   .confetti-piece { display: none; }
+  .hero-kenburns { animation: none; }
+  .twinkle { animation: none; opacity: 0; }
+  .hero-confetti { display: none; }
 }
 
 @media print {
