@@ -1,4 +1,5 @@
 import { getPublicData } from "@/lib/data";
+import { getSettings } from "@/lib/settings";
 import { KONFIG } from "@/lib/config";
 import Countdown from "@/components/Countdown";
 import LiveData from "@/components/LiveData";
@@ -12,7 +13,15 @@ const HERO_BG =
 
 export default async function Home() {
   const d = await getPublicData();
+  const settings = await getSettings();
   const hari = Math.max(0, Math.floor((new Date(KONFIG.acara.tanggalHariH).getTime() - Date.now()) / 86400000));
+  const pembayaran = {
+    bank: settings.bank,
+    noRekening: settings.noRekening,
+    atasNama: settings.atasNama,
+    whatsapp: settings.whatsapp,
+    qrisImage: settings.qrisImage,
+  };
 
   return (
     <>
@@ -50,7 +59,7 @@ export default async function Home() {
         </section>
 
         {/* PROGRESS + KEGIATAN + DONASI + DONATUR + LAPORAN (live, auto-refresh) */}
-        <LiveData initial={d} hari={hari} />
+        <LiveData initial={d} hari={hari} pembayaran={pembayaran} />
       </main>
 
       <footer className="bg-surface-container-highest border-t border-outline-variant" id="kontak">
@@ -58,7 +67,7 @@ export default async function Home() {
           <div className="flex flex-col items-center md:items-start text-center md:text-left gap-2">
             <div className="font-headline-sm text-headline-sm font-bold text-on-surface">Villa Gardenia 17-an</div>
             <div className="font-body-md text-body-md text-secondary">© 2026 Panitia HUT RI ke-81 Villa Gardenia. Semangat Gotong Royong.</div>
-            <a className="font-body-md text-body-md text-primary hover:underline" href={`https://wa.me/${KONFIG.pembayaran.whatsapp}`}>Kontak Panitia (WhatsApp)</a>
+            <a className="font-body-md text-body-md text-primary hover:underline" href={`https://wa.me/${settings.whatsapp}`}>Kontak Panitia (WhatsApp)</a>
           </div>
         </div>
       </footer>

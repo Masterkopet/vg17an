@@ -5,9 +5,10 @@ import { KONFIG } from "@/lib/config";
 import { rupiah } from "@/lib/format";
 
 const presets = KONFIG.nominalCepat;
-const p = KONFIG.pembayaran;
 
-export default function DonationForm() {
+export type Pembayaran = { bank: string; noRekening: string; atasNama: string; whatsapp: string; qrisImage: string };
+
+export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran }) {
   const [nominal, setNominal] = useState(0);
   const [nama, setNama] = useState("");
   const [open, setOpen] = useState(false);

@@ -5,7 +5,7 @@ import type { PublicData } from "@/lib/data";
 import { KONFIG } from "@/lib/config";
 import { rupiah, tglID, waktuID, inisial } from "@/lib/format";
 import Reveal from "./Reveal";
-import DonationForm from "./DonationForm";
+import DonationForm, { type Pembayaran } from "./DonationForm";
 
 function useCountUp(target: number, active: boolean, duration = 1200): number {
   const [val, setVal] = useState(active ? target : 0);
@@ -44,7 +44,7 @@ function useCountUp(target: number, active: boolean, duration = 1200): number {
   return val;
 }
 
-export default function LiveData({ initial, hari }: { initial: PublicData; hari: number }) {
+export default function LiveData({ initial, hari, pembayaran }: { initial: PublicData; hari: number; pembayaran: Pembayaran }) {
   const [data, setData] = useState<PublicData>(initial);
   const [revealed, setRevealed] = useState(false);
   const [toast, setToast] = useState("");
@@ -198,7 +198,7 @@ export default function LiveData({ initial, hari }: { initial: PublicData; hari:
       {/* DONASI */}
       <section className="py-24 px-margin-mobile md:px-margin-desktop bg-background w-full scroll-mt-24" id="donasi">
         <div className="max-w-3xl mx-auto">
-          <DonationForm />
+          <DonationForm pembayaran={pembayaran} />
         </div>
       </section>
 

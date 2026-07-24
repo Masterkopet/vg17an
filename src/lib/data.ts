@@ -1,5 +1,5 @@
 import { prisma } from "./db";
-import { KONFIG } from "./config";
+import { getSettings } from "./settings";
 
 export type Donatur = { id: number; nama: string; jumlah: number; tanggal: string; catatan: string };
 export type Pengeluaran = { id: number; keterangan: string; jumlah: number; tanggal: string };
@@ -39,7 +39,7 @@ export async function getPublicData(): Promise<PublicData> {
 
   const totalPemasukan = donatur.reduce((a, d) => a + d.jumlah, 0);
   const totalPengeluaran = pengeluaran.reduce((a, d) => a + d.jumlah, 0);
-  const target = KONFIG.danaTarget;
+  const target = (await getSettings()).target;
   const pctReal = target > 0 ? (totalPemasukan / target) * 100 : 0;
 
   return {
