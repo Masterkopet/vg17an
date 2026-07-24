@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { rupiah } from "@/lib/format";
-import { tgSendToAdmins, telegramConfigured, escapeHtml } from "@/lib/telegram";
+import {
+  telegramConfigured,
+  tgSend,
+  tgSendPhoto,
+  donationNotifText,
+  donationKeyboard,
+} from "@/lib/telegram";
+import { getBendaharaChatIds } from "@/lib/settings";
+import { saveUpload } from "@/lib/storage";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,22 +26,54 @@ function rateLimited(ip: string): boolean {
   return arr.length > MAX;
 }
 
+const ALLOWED_MIME: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
+const MAX_PROOF_BYTES = 5 * 1024 * 1024; // 5 MB
+
+type Parsed = { name: string; amount: number; proof: { data: Uint8Array<ArrayBuffer>; mime: string; ext: string } | null };
+
+async function parseRequest(req: NextRequest): Promise<Parsed | { error: string }> {
+  const ct = req.headers.get("content-type") || "";
+
+  if (ct.includes("multipart/form-data")) {
+    const form = await req.formData().catch(() => null);
+    if (!form) return { error: "Permintaan tidak valid" };
+    const name = String(form.get("name") || "").trim().slice(0, 60);
+    const amount = Math.round(Number(form.get("amount")));
+    const file = form.get("proof");
+    let proof: Parsed["proof"] = null;
+    if (file instanceof File && file.size > 0) {
+      const ext = ALLOWED_MIME[file.type];
+      if (!ext) return { error: "Bukti harus berupa gambar JPG, PNG, atau WebP" };
+      if (file.size > MAX_PROOF_BYTES) return { error: "Ukuran bukti maksimal 5 MB" };
+      const buf = new Uint8Array(await file.arrayBuffer()) as Uint8Array<ArrayBuffer>;
+      proof = { data: buf, mime: file.type, ext };
+    }
+    return { name, amount, proof };
+  }
+
+  const body = (await req.json().catch(() => null)) as { name?: unknown; amount?: unknown } | null;
+  if (!body) return { error: "Permintaan tidak valid" };
+  return {
+    name: typeof body.name === "string" ? body.name.trim().slice(0, 60) : "",
+    amount: Math.round(Number(body.amount)),
+    proof: null,
+  };
+}
+
 export async function POST(req: NextRequest) {
   const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || req.headers.get("x-real-ip") || "unknown";
   if (rateLimited(ip)) {
     return NextResponse.json({ ok: false, error: "Terlalu banyak percobaan. Coba lagi beberapa menit lagi." }, { status: 429 });
   }
 
-  let body: { name?: unknown; amount?: unknown };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ ok: false, error: "Permintaan tidak valid" }, { status: 400 });
-  }
+  const parsed = await parseRequest(req);
+  if ("error" in parsed) return NextResponse.json({ ok: false, error: parsed.error }, { status: 400 });
 
-  const amount = Math.round(Number(body.amount));
-  const name = typeof body.name === "string" ? body.name.trim().slice(0, 60) : "";
-
+  const { name, amount, proof } = parsed;
   if (!Number.isFinite(amount) || amount < 1000) {
     return NextResponse.json({ ok: false, error: "Nominal minimal Rp 1.000" }, { status: 400 });
   }
@@ -46,22 +85,29 @@ export async function POST(req: NextRequest) {
     data: { name: name || null, amount, status: "pending" },
   });
 
+  // Simpan bukti di volume (arsip, tidak pernah tampil publik).
+  if (proof) {
+    try {
+      const filename = `bukti-${donation.id}.${proof.ext}`;
+      await saveUpload(filename, proof.data);
+      await prisma.donation.update({ where: { id: donation.id }, data: { proofFile: filename } });
+    } catch (e) {
+      console.error("[donate] gagal menyimpan bukti:", e);
+    }
+  }
+
+  // Notifikasi ke bendahara: foto bukti (bila ada) + tombol Terima/Tolak.
   if (telegramConfigured()) {
-    const text =
-      `🔔 <b>Donasi baru — menunggu verifikasi</b>\n\n` +
-      `👤 ${escapeHtml(name || "(tanpa nama)")}\n` +
-      `💰 <b>${rupiah(amount)}</b>\n\n` +
-      `Silakan cek rekening, lalu tekan tombol di bawah:`;
-    const keyboard = {
-      inline_keyboard: [
-        [
-          { text: "✅ Terima", callback_data: `approve:${donation.id}` },
-          { text: "❌ Tolak", callback_data: `reject:${donation.id}` },
-        ],
-      ],
-    };
-    const results = await tgSendToAdmins(text, keyboard);
-    const first = results.find((r) => r && r.ok && r.result);
+    const ids = await getBendaharaChatIds();
+    const text = donationNotifText(name, amount, !!proof);
+    const keyboard = donationKeyboard(donation.id);
+    let first: any = null;
+    for (const id of ids) {
+      const r = proof
+        ? await tgSendPhoto(id, proof.data, proof.mime, text, keyboard)
+        : await tgSend(id, text, keyboard);
+      if (!first && r && r.ok && r.result) first = r;
+    }
     if (first?.result) {
       await prisma.donation.update({
         where: { id: donation.id },
@@ -70,5 +116,5 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, id: donation.id });
+  return NextResponse.json({ ok: true, id: donation.id, proofReceived: !!proof });
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { KONFIG } from "@/lib/config";
 import { rupiah } from "@/lib/format";
 
@@ -15,6 +15,38 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [msg, setMsg] = useState("");
   const [copied, setCopied] = useState(false);
+  const [proof, setProof] = useState<File | null>(null);
+  const [proofUrl, setProofUrl] = useState<string | null>(null);
+  const [proofSent, setProofSent] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!proof) {
+      setProofUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(proof);
+    setProofUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [proof]);
+
+  function pilihBukti(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0] || null;
+    if (!f) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(f.type)) {
+      setMsg("Bukti harus berupa foto (JPG/PNG/WebP)");
+      setTimeout(() => setMsg(""), 3000);
+      e.target.value = "";
+      return;
+    }
+    if (f.size > 5 * 1024 * 1024) {
+      setMsg("Ukuran foto maksimal 5 MB");
+      setTimeout(() => setMsg(""), 3000);
+      e.target.value = "";
+      return;
+    }
+    setProof(f);
+  }
 
   function pilih(v: number) {
     setNominal(v);
@@ -39,13 +71,14 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
   async function sudahTransfer() {
     setStatus("sending");
     try {
-      const res = await fetch("/api/donate", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name: nama.trim(), amount: nominal }),
-      });
+      const fd = new FormData();
+      fd.append("name", nama.trim());
+      fd.append("amount", String(nominal));
+      if (proof) fd.append("proof", proof);
+      const res = await fetch("/api/donate", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error || "Gagal");
+      setProofSent(!!data.proofReceived);
       setStatus("done");
     } catch (err) {
       setStatus("error");
@@ -58,6 +91,8 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
     if (status === "done") {
       setNominal(0);
       setNama("");
+      setProof(null);
+      setProofSent(false);
       setStatus("idle");
     }
   }
@@ -147,7 +182,7 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
                 <span className="material-symbols-outlined text-primary text-5xl mb-3" style={{ fontVariationSettings: "'FILL' 1" }} aria-hidden>check_circle</span>
                 <h3 className="font-headline-sm text-headline-sm text-on-surface mb-2">Terima kasih! 🇮🇩</h3>
                 <p className="font-body-md text-body-md text-secondary">
-                  Donasi Anda <b>{rupiah(nominal)}</b> tercatat dan sedang <b>menunggu verifikasi bendahara</b>. Setelah dicek, otomatis muncul di papan donatur & laporan.
+                  Donasi Anda <b>{rupiah(nominal)}</b> tercatat{proofSent ? " dan bukti transfer sudah diteruskan ke bendahara" : ""}. Sedang <b>menunggu verifikasi</b> — setelah dicek, otomatis muncul di papan donatur & laporan.
                 </p>
                 <button onClick={tutup} className="mt-6 bg-primary text-on-primary font-label-md text-label-md px-8 py-3 rounded-full press">Tutup</button>
               </div>
@@ -205,11 +240,42 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
                   </div>
                 )}
 
+                {/* Upload bukti transfer — langsung diteruskan ke Telegram bendahara */}
+                <div className="rounded-2xl border border-outline-variant p-4 mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="material-symbols-outlined text-primary" aria-hidden>photo_camera</span>
+                    <span className="font-label-md text-label-md text-on-surface">Bukti Transfer (opsional)</span>
+                  </div>
+                  <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={pilihBukti} />
+                  {proofUrl ? (
+                    <div className="flex items-center gap-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={proofUrl} alt="Pratinjau bukti transfer" className="w-16 h-16 object-cover rounded-xl border border-outline-variant" />
+                      <div className="min-w-0 flex-1">
+                        <p className="font-label-md text-label-md text-on-surface truncate">{proof?.name}</p>
+                        <p className="font-label-md text-label-md text-secondary">Akan diteruskan ke bendahara.</p>
+                      </div>
+                      <button type="button" onClick={() => { setProof(null); if (fileRef.current) fileRef.current.value = ""; }} aria-label="Hapus bukti" className="text-secondary hover:text-error press">
+                        <span className="material-symbols-outlined" aria-hidden>delete</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => fileRef.current?.click()}
+                      className="w-full flex items-center justify-center gap-2 border border-dashed border-outline-variant rounded-xl py-3 text-secondary hover:text-primary hover:border-primary press font-label-md text-label-md"
+                    >
+                      <span className="material-symbols-outlined" aria-hidden>add_photo_alternate</span> Lampirkan foto bukti transfer
+                    </button>
+                  )}
+                </div>
+
                 <p className="font-body-md text-body-md text-secondary text-center mb-4">
-                  Transfer sesuai nominal, lalu tekan tombol di bawah. Bendahara akan memverifikasi & mencatatnya.
+                  Transfer sesuai nominal, lampirkan bukti, lalu tekan tombol di bawah. Bendahara memverifikasi & donasi otomatis tampil di situs.
                 </p>
 
                 {status === "error" && <p className="text-center font-label-md text-label-md text-error mb-3">{msg}</p>}
+                {msg && status !== "error" && <p className="text-center font-label-md text-label-md text-error mb-3">{msg}</p>}
 
                 <button
                   onClick={sudahTransfer}
@@ -223,9 +289,9 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
                   href={`https://wa.me/${p.whatsapp}?text=${waText}`}
                   target="_blank"
                   rel="noopener"
-                  className="mt-3 w-full flex items-center justify-center gap-2 bg-surface-container-low text-on-surface border border-outline-variant font-label-md text-label-md px-8 py-3 rounded-full press"
+                  className="mt-3 w-full flex items-center justify-center gap-2 text-secondary font-label-md text-label-md px-8 py-2 rounded-full press hover:text-primary"
                 >
-                  <span className="material-symbols-outlined" aria-hidden>chat</span> Kirim bukti via WhatsApp (opsional)
+                  <span className="material-symbols-outlined text-base" aria-hidden>chat</span> Atau konfirmasi via WhatsApp
                 </a>
               </>
             )}

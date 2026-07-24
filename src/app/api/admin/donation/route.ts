@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAuthed } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { rupiah } from "@/lib/format";
-import { tgEdit, escapeHtml } from "@/lib/telegram";
+import { tgEditAny, escapeHtml } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     // Sinkronkan pesan Telegram (bila ada) agar tombolnya hilang.
     if (donation.tgChatId && donation.tgMessageId) {
       const label = status === "approved" ? "✅ <b>DITERIMA</b> (via admin web)" : "❌ <b>DITOLAK</b> (via admin web)";
-      tgEdit(donation.tgChatId, donation.tgMessageId, `${label}\n\n👤 ${escapeHtml(donation.name || "(tanpa nama)")}\n💰 <b>${rupiah(donation.amount)}</b>`).catch(() => {});
+      tgEditAny(donation.tgChatId, donation.tgMessageId, `${label}\n\n👤 ${escapeHtml(donation.name || "(tanpa nama)")}\n💰 <b>${rupiah(donation.amount)}</b>`).catch(() => {});
     }
     return NextResponse.json({ ok: true });
   }

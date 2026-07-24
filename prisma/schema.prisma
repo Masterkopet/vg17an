@@ -14,6 +14,7 @@ model Donation {
   amount      Int
   status      String    @default("pending")
   note        String?
+  proofFile   String?   // nama file bukti transfer (tersimpan di folder uploads, tidak publik)
   tgChatId    String?
   tgMessageId String?
   createdAt   DateTime  @default(now())

@@ -2,7 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getPublicData } from "@/lib/data";
 import { rupiah, parseAmount } from "@/lib/format";
-import { isAdmin, tgSend, tgEdit, tgAnswerCallback, escapeHtml } from "@/lib/telegram";
+import {
+  tgSend,
+  tgEdit,
+  tgEditCaption,
+  tgAnswerCallback,
+  escapeHtml,
+  donationNotifText,
+  donationKeyboard,
+  confirmRejectKeyboard,
+} from "@/lib/telegram";
+import { isBendahara } from "@/lib/settings";
 import { sendBackup } from "@/lib/backup";
 
 export const runtime = "nodejs";
@@ -12,7 +22,9 @@ const HELP =
   "🇮🇩 <b>Bot Donasi HUT RI ke-81 — Villa Gardenia</b>\n\n" +
   "Bot ini untuk <b>bendahara</b>: verifikasi donasi & catat keuangan. Semua yang tercatat langsung tampil di situs.\n\n" +
   "<b>✅ Verifikasi donasi dari situs</b>\n" +
-  "Saat ada donasi via situs, bot mengirim notifikasi + tombol <b>Terima</b>/<b>Tolak</b>. Cek rekening, lalu tekan <b>Terima</b> agar tercatat.\n\n" +
+  "Saat ada donasi, bot mengirim notifikasi (beserta <b>foto bukti transfer</b> bila donatur melampirkan) + tombol <b>Terima</b>/<b>Tolak</b>.\n" +
+  "• <b>Terima</b>: sekali tekan, langsung tercatat.\n" +
+  "• <b>Tolak</b>: bot minta <b>konfirmasi sekali lagi</b> agar tidak salah pencet.\n\n" +
   "<b>➕ Catat donasi manual (tunai/di luar situs)</b>\n" +
   "<code>/masuk &lt;jumlah&gt; &lt;nama&gt;</code>\n" +
   "contoh: <code>/masuk 500000 Bpk Andi</code>  (nama boleh dikosongkan)\n\n" +
@@ -26,8 +38,8 @@ const HELP =
   "<code>/rekap</code> — ringkasan dana\n" +
   "<code>/backup</code> — kirim file Excel laporan sekarang\n" +
   "<code>/id</code> — lihat chat id Anda\n\n" +
-  "💡 File Excel juga dikirim <b>otomatis setiap hari</b>.\n" +
-  "🌐 Panel admin web (edit rekening, dll): buka <b>/admin</b> di situs.";
+  "💾 Backup otomatis harian (Excel + database) dikirim ke chat <b>Arsip</b> — atur di Admin Panel (/admin) bagian 'Chat ID Arsip Backup' supaya tidak memenuhi chat bendahara.\n" +
+  "🌐 Panel admin web (rekening, target, dll): buka <b>/admin</b> di situs.";
 
 export async function POST(req: NextRequest) {
   const secret = req.headers.get("x-telegram-bot-api-secret-token");
@@ -49,7 +61,6 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error("[telegram] webhook error", e);
   }
-  // Selalu 200 supaya Telegram tidak retry berulang.
   return NextResponse.json({ ok: true });
 }
 
@@ -58,13 +69,13 @@ async function handleCallback(cq: any) {
   const data: string = cq.data || "";
   const msg = cq.message;
 
-  if (!isAdmin(fromId)) {
+  if (!(await isBendahara(fromId))) {
     await tgAnswerCallback(cq.id, "Anda tidak berwenang.");
     return;
   }
   const [action, idStr] = data.split(":");
   const id = Number(idStr);
-  if (!id || (action !== "approve" && action !== "reject")) {
+  if (!id || !["approve", "reject", "rejectyes", "back"].includes(action)) {
     await tgAnswerCallback(cq.id);
     return;
   }
@@ -73,23 +84,54 @@ async function handleCallback(cq: any) {
     await tgAnswerCallback(cq.id, "Data tidak ditemukan.");
     return;
   }
+
+  // Pesan notifikasi bisa berupa teks ATAU foto (bukti transfer) — edit sesuai jenisnya.
+  const edit = msg?.photo ? tgEditCaption : tgEdit;
+  const nama = donation.name || "(tanpa nama)";
+  const ringkas = `👤 ${escapeHtml(nama)}\n💰 <b>${rupiah(donation.amount)}</b>`;
+
   if (donation.status !== "pending") {
     await tgAnswerCallback(cq.id, donation.status === "approved" ? "Sudah diterima." : "Sudah ditolak.");
     return;
   }
 
-  const status = action === "approve" ? "approved" : "rejected";
-  await prisma.donation.update({ where: { id }, data: { status, decidedAt: new Date() } });
-  await tgAnswerCallback(cq.id, status === "approved" ? "✅ Donasi diterima" : "❌ Donasi ditolak");
+  if (action === "approve") {
+    await prisma.donation.update({ where: { id }, data: { status: "approved", decidedAt: new Date() } });
+    await tgAnswerCallback(cq.id, "✅ Donasi diterima");
+    if (msg) await edit(msg.chat.id, msg.message_id, `✅ <b>DITERIMA</b>\n\n${ringkas}`);
+    return;
+  }
 
-  const nama = donation.name || "(tanpa nama)";
-  const label = status === "approved" ? "✅ <b>DITERIMA</b>" : "❌ <b>DITOLAK</b>";
-  if (msg) {
-    await tgEdit(
-      msg.chat.id,
-      msg.message_id,
-      `${label}\n\n👤 ${escapeHtml(nama)}\n💰 <b>${rupiah(donation.amount)}</b>`
-    );
+  if (action === "reject") {
+    // Konfirmasi ganda — belum mengubah apa pun.
+    await tgAnswerCallback(cq.id);
+    if (msg)
+      await edit(
+        msg.chat.id,
+        msg.message_id,
+        `⚠️ <b>Yakin TOLAK donasi ini?</b>\n\n${ringkas}\n\nDonasi yang ditolak tidak tampil di situs.`,
+        confirmRejectKeyboard(id)
+      );
+    return;
+  }
+
+  if (action === "rejectyes") {
+    await prisma.donation.update({ where: { id }, data: { status: "rejected", decidedAt: new Date() } });
+    await tgAnswerCallback(cq.id, "❌ Donasi ditolak");
+    if (msg) await edit(msg.chat.id, msg.message_id, `❌ <b>DITOLAK</b>\n\n${ringkas}`);
+    return;
+  }
+
+  if (action === "back") {
+    await tgAnswerCallback(cq.id);
+    if (msg)
+      await edit(
+        msg.chat.id,
+        msg.message_id,
+        donationNotifText(donation.name, donation.amount, !!donation.proofFile),
+        donationKeyboard(id)
+      );
+    return;
   }
 }
 
@@ -98,15 +140,17 @@ async function handleMessage(msg: any) {
   const fromId = msg.from?.id;
   const text: string = (msg.text || "").trim();
 
-  // Perintah publik
   if (text === "/id" || text.startsWith("/id ") || text.startsWith("/id@")) {
-    await tgSend(chatId, `Chat id Anda: <code>${chatId}</code>\n\nTempel ke Environment Variable <code>TELEGRAM_ADMIN_CHAT_IDS</code> di Coolify, lalu redeploy.`);
+    await tgSend(
+      chatId,
+      `Chat id Anda: <code>${chatId}</code>\n\nTempel ke Admin Panel (/admin) bagian:\n• <b>Chat ID Bendahara</b> — untuk verifikasi donasi & perintah bot, atau\n• <b>Chat ID Arsip Backup</b> — untuk menerima backup otomatis.\n(Bisa juga via env <code>TELEGRAM_ADMIN_CHAT_IDS</code>.)`
+    );
     return;
   }
   if (text === "/start" || text.startsWith("/start")) {
     await tgSend(
       chatId,
-      "🇮🇩 Bot Donasi HUT RI ke-81 Villa Gardenia.\n\nKirim <code>/id</code> untuk melihat chat id Anda.\nKirim <code>/help</code> untuk daftar perintah bendahara."
+      "🇮🇩 Bot Donasi HUT RI ke-81 Villa Gardenia.\n\nKirim <code>/id</code> untuk melihat chat id Anda.\nKirim <code>/help</code> untuk panduan lengkap."
     );
     return;
   }
@@ -115,14 +159,13 @@ async function handleMessage(msg: any) {
     return;
   }
 
-  // Perintah khusus bendahara (admin)
-  const admin = isAdmin(fromId) || isAdmin(chatId);
-  if (!admin) return; // abaikan diam-diam untuk non-admin
+  const admin = (await isBendahara(fromId)) || (await isBendahara(chatId));
+  if (!admin) return;
 
   if (text.startsWith("/backup")) {
     await tgSend(chatId, "⏳ Menyiapkan file Excel…");
-    const n = await sendBackup([chatId], "📎 Backup laporan keuangan (diminta manual)");
-    if (n === 0) await tgSend(chatId, "Gagal mengirim file. Pastikan token bot benar & bot boleh mengirim dokumen.");
+    const n = await sendBackup([chatId], "📎 Laporan keuangan (diminta manual)");
+    if (n === 0) await tgSend(chatId, "Gagal mengirim file. Pastikan token bot benar.");
     return;
   }
 

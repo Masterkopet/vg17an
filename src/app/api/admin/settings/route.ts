@@ -23,6 +23,16 @@ export async function POST(req: NextRequest) {
   }
   if (typeof b.whatsapp === "string") partial.whatsapp = normalizeWa(b.whatsapp);
   if (b.target !== undefined && b.target !== "") partial.target = parseAmount(b.target);
+  // Chat id Telegram: angka (boleh negatif untuk grup), dipisah koma.
+  for (const k of ["bendaharaChatIds", "backupChatIds"] as const) {
+    if (typeof b[k] === "string") {
+      partial[k] = (b[k] as string)
+        .split(",")
+        .map((x) => x.trim())
+        .filter((x) => /^-?\d+$/.test(x))
+        .join(",");
+    }
+  }
 
   await setSettings(partial);
   return NextResponse.json({ ok: true, settings: await getSettings() });

@@ -6,7 +6,16 @@ import { rupiah, tglID, waktuID } from "@/lib/format";
 
 type Donation = { id: number; name: string | null; amount: number; status: string; note: string | null; createdAt: string };
 type Expense = { id: number; description: string; amount: number; date: string };
-type Settings = { bank: string; noRekening: string; atasNama: string; whatsapp: string; qrisImage: string; target: number };
+type Settings = {
+  bank: string;
+  noRekening: string;
+  atasNama: string;
+  whatsapp: string;
+  qrisImage: string;
+  target: number;
+  bendaharaChatIds: string;
+  backupChatIds: string;
+};
 type Summary = { totalPemasukan: number; totalPengeluaran: number; saldo: number; jumlahDonatur: number; pending: number };
 
 const card = "bg-surface-container-lowest border border-outline-variant rounded-2xl";
@@ -152,6 +161,22 @@ export default function AdminDashboard({
             <span className="font-label-md text-label-md text-secondary block mb-1">Target Dana (Rp)</span>
             <input className={`${input} tabular-nums`} inputMode="numeric" value={String(form.target)} onChange={(e) => setForm({ ...form, target: Number(e.target.value.replace(/\D/g, "")) || 0 })} />
           </label>
+
+          <div className="md:col-span-2 border-t border-outline-variant pt-4 mt-1">
+            <h3 className="font-label-md text-label-md text-on-surface font-bold mb-1">Bot Telegram — pembagian peran</h3>
+            <p className="font-label-md text-label-md text-secondary mb-3">
+              Dapatkan chat id dengan mengirim <code className="bg-surface-container-high px-1 rounded">/id</code> ke bot. Pisahkan dengan koma bila lebih dari satu.
+            </p>
+          </div>
+          <label className="block">
+            <span className="font-label-md text-label-md text-secondary block mb-1">Chat ID Bendahara (verifikasi & perintah)</span>
+            <input className={`${input} tabular-nums`} placeholder="mis. 12345678, 87654321" value={form.bendaharaChatIds} onChange={(e) => setForm({ ...form, bendaharaChatIds: e.target.value })} />
+          </label>
+          <label className="block">
+            <span className="font-label-md text-label-md text-secondary block mb-1">Chat ID Arsip Backup (hanya terima backup)</span>
+            <input className={`${input} tabular-nums`} placeholder="mis. -100123456789 (grup arsip)" value={form.backupChatIds} onChange={(e) => setForm({ ...form, backupChatIds: e.target.value })} />
+          </label>
+
           <div className="md:col-span-2">
             <button type="submit" disabled={busy} className={btnPrimary}>
               <span className="material-symbols-outlined text-base" aria-hidden>save</span> Simpan Pengaturan
