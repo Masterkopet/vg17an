@@ -44,7 +44,19 @@ function useCountUp(target: number, active: boolean, duration = 1200): number {
   return val;
 }
 
-export default function LiveData({ initial, hari, pembayaran }: { initial: PublicData; hari: number; pembayaran: Pembayaran }) {
+export type KegiatanItem = { tanggal: string; judul: string; deskripsi: string };
+
+export default function LiveData({
+  initial,
+  hari,
+  pembayaran,
+  kegiatan,
+}: {
+  initial: PublicData;
+  hari: number;
+  pembayaran: Pembayaran;
+  kegiatan: KegiatanItem[];
+}) {
   const [data, setData] = useState<PublicData>(initial);
   const [revealed, setRevealed] = useState(false);
   const [toast, setToast] = useState("");
@@ -115,12 +127,6 @@ export default function LiveData({ initial, hari, pembayaran }: { initial: Publi
 
   const shareText = `Ayo dukung perayaan HUT RI ke-81 di Villa Gardenia! 🇮🇩 Terkumpul ${rupiah(data.totalPemasukan)} dari target ${rupiah(data.target)}. Ikut berdonasi di sini:`;
 
-  const kegiatan = [
-    { t: "Lomba Anak-anak", tgl: "17 Agustus", d: "Beragam lomba tradisional yang mendidik dan menyenangkan untuk anak-anak di lingkungan kita." },
-    { t: "Malam Tirakatan", tgl: "16 Agustus", d: "Malam renungan dan doa bersama sebagai wujud syukur atas kemerdekaan bangsa." },
-    { t: "Pawai Budaya", tgl: "18 Agustus", d: "Puncak acara berupa karnaval keliling perumahan menampilkan kreativitas warga." },
-  ];
-
   return (
     <>
       {/* PROGRESS */}
@@ -175,25 +181,29 @@ export default function LiveData({ initial, hari, pembayaran }: { initial: Publi
       </section>
 
       {/* KEGIATAN */}
-      <section className="py-24 px-margin-mobile md:px-margin-desktop bg-surface w-full scroll-mt-24" id="kegiatan">
-        <div className="max-w-container-max mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-4">Rangkaian Kegiatan</h2>
-            <p className="font-body-lg text-body-lg text-secondary max-w-2xl mx-auto">Berbagai acara meriah telah kami siapkan untuk merayakan kemerdekaan bersama seluruh warga Villa Gardenia.</p>
+      {kegiatan.length > 0 && (
+        <section className="py-24 px-margin-mobile md:px-margin-desktop bg-surface w-full scroll-mt-24" id="kegiatan">
+          <div className="max-w-container-max mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-4">Rangkaian Kegiatan</h2>
+              <p className="font-body-lg text-body-lg text-secondary max-w-2xl mx-auto">Berbagai acara meriah telah kami siapkan untuk merayakan kemerdekaan bersama seluruh warga Villa Gardenia.</p>
+            </div>
+            <div className={`grid grid-cols-1 gap-gutter ${kegiatan.length >= 3 ? "md:grid-cols-3" : kegiatan.length === 2 ? "md:grid-cols-2 max-w-3xl mx-auto" : "max-w-xl mx-auto"}`}>
+              {kegiatan.map((k, i) => (
+                <Reveal key={`${k.judul}-${i}`} delay={(i % 3) * 70}>
+                  <article className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-6 h-full">
+                    {k.tanggal && (
+                      <div className="inline-block bg-primary/5 px-3 py-1 rounded-full border border-outline-variant mb-3"><span className="font-label-md text-label-md text-primary">{k.tanggal}</span></div>
+                    )}
+                    <h3 className="font-headline-md text-headline-md text-on-surface mb-2">{k.judul}</h3>
+                    <p className="font-body-md text-body-md text-secondary">{k.deskripsi}</p>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-            {kegiatan.map((k, i) => (
-              <Reveal key={k.t} delay={(i % 3) * 70}>
-                <article className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-6 h-full">
-                  <div className="inline-block bg-primary/5 px-3 py-1 rounded-full border border-outline-variant mb-3"><span className="font-label-md text-label-md text-primary">{k.tgl}</span></div>
-                  <h3 className="font-headline-md text-headline-md text-on-surface mb-2">{k.t}</h3>
-                  <p className="font-body-md text-body-md text-secondary">{k.d}</p>
-                </article>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* DONASI */}
       <section className="py-24 px-margin-mobile md:px-margin-desktop bg-background w-full scroll-mt-24" id="donasi">

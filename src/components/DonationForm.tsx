@@ -7,7 +7,8 @@ import { compressImage } from "@/lib/compressImage";
 
 const presets = KONFIG.nominalCepat;
 
-export type Pembayaran = { bank: string; noRekening: string; atasNama: string; whatsapp: string; qrisImage: string };
+export type Rekening = { bank: string; norek: string; nama: string };
+export type Pembayaran = { rekening: Rekening[]; whatsapp: string; qrisImage: string; kodeUnik: string };
 
 export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran }) {
   const [nominal, setNominal] = useState(0);
@@ -15,7 +16,7 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [msg, setMsg] = useState("");
-  const [copied, setCopied] = useState(false);
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const [proof, setProof] = useState<File | null>(null);
   const [proofUrl, setProofUrl] = useState<string | null>(null);
   const [proofSent, setProofSent] = useState(false);
@@ -215,33 +216,43 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
                     <span className="material-symbols-outlined text-primary" aria-hidden>account_balance</span>
                     <span className="font-label-md text-label-md text-on-surface">Transfer Bank</span>
                   </div>
-                  <div className="space-y-2 font-body-md text-body-md">
-                    <div className="flex justify-between"><span className="text-secondary">Bank</span><span className="text-on-surface font-semibold">{p.bank}</span></div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-secondary">No. Rekening</span>
-                      <span className="flex items-center gap-2">
-                        <span className="text-on-surface font-semibold tabular-nums">{p.noRekening}</span>
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            try {
-                              await navigator.clipboard.writeText(p.noRekening.replace(/[\s.-]/g, ""));
-                              setCopied(true);
-                              setTimeout(() => setCopied(false), 2000);
-                            } catch {
-                              /* clipboard tidak tersedia */
-                            }
-                          }}
-                          aria-label="Salin nomor rekening"
-                          className={`press inline-flex items-center gap-1 px-2 py-1 rounded-lg font-label-md text-label-md transition-colors ${copied ? "bg-[#e6f4ea] text-[#1e6b33]" : "text-primary hover:bg-primary/5"}`}
-                        >
-                          <span className="material-symbols-outlined text-base" aria-hidden>{copied ? "check" : "content_copy"}</span>
-                          {copied ? "Tersalin" : "Salin"}
-                        </button>
-                      </span>
-                    </div>
-                    <div className="flex justify-between"><span className="text-secondary">Atas Nama</span><span className="text-on-surface font-semibold text-right">{p.atasNama}</span></div>
+                  <div className="space-y-3">
+                    {p.rekening.map((r, i) => (
+                      <div key={i} className={`font-body-md text-body-md ${i > 0 ? "pt-3 border-t border-outline-variant" : ""}`}>
+                        <div className="flex justify-between items-center">
+                          <span className="text-on-surface font-semibold">{r.bank}</span>
+                          <span className="flex items-center gap-2">
+                            <span className="text-on-surface font-semibold tabular-nums">{r.norek}</span>
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                try {
+                                  await navigator.clipboard.writeText(r.norek.replace(/[\s.-]/g, ""));
+                                  setCopiedIdx(i);
+                                  setTimeout(() => setCopiedIdx(null), 2000);
+                                } catch {
+                                  /* clipboard tidak tersedia */
+                                }
+                              }}
+                              aria-label={`Salin nomor rekening ${r.bank}`}
+                              className={`press inline-flex items-center gap-1 px-2 py-1 rounded-lg font-label-md text-label-md transition-colors ${copiedIdx === i ? "bg-[#e6f4ea] text-[#1e6b33]" : "text-primary hover:bg-primary/5"}`}
+                            >
+                              <span className="material-symbols-outlined text-base" aria-hidden>{copiedIdx === i ? "check" : "content_copy"}</span>
+                              {copiedIdx === i ? "Tersalin" : "Salin"}
+                            </button>
+                          </span>
+                        </div>
+                        {r.nama && <div className="font-label-md text-label-md text-secondary">a.n. {r.nama}</div>}
+                      </div>
+                    ))}
                   </div>
+                  {p.kodeUnik && (
+                    <div className="mt-3 rounded-xl bg-[#fff4d6] border border-[#f0d98a] px-3 py-2 font-label-md text-label-md text-[#7a5f00]">
+                      💡 Mohon tambahkan kode unik <b>{p.kodeUnik}</b> di akhir nominal agar mudah dicek
+                      {nominal >= 1000 && <> — contoh: <b>{rupiah(nominal - (nominal % 1000) + Number(p.kodeUnik))}</b></>}
+                      .
+                    </div>
+                  )}
                 </div>
 
                 {p.qrisImage && (

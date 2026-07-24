@@ -15,12 +15,22 @@ type Settings = {
   target: number;
   bendaharaChatIds: string;
   backupChatIds: string;
+  tentang: string;
+  kegiatan: string;
+  panitia: string;
+  rekeningLain: string;
+  kodeUnik: string;
+  sponsorText: string;
+  sponsorWa: string;
+  sponsorUrl: string;
+  kontak: string;
 };
 type Summary = { totalPemasukan: number; totalPengeluaran: number; saldo: number; jumlahDonatur: number; pending: number };
 
 const card = "bg-surface-container-lowest border border-outline-variant rounded-2xl";
 const input =
   "w-full rounded-xl border-0 py-3 px-4 text-on-surface ring-1 ring-inset ring-outline-variant focus:ring-2 focus:ring-inset focus:ring-primary font-body-md text-body-md bg-surface-container-lowest";
+const textarea = input + " resize-y leading-relaxed";
 const btnPrimary = "inline-flex items-center justify-center gap-1 bg-primary text-on-primary font-label-md text-label-md px-5 py-2.5 rounded-full press disabled:opacity-50";
 const btnGhost = "inline-flex items-center gap-1 border border-outline-variant text-on-surface font-label-md text-label-md px-4 py-2 rounded-full press hover:border-primary";
 
@@ -180,6 +190,62 @@ export default function AdminDashboard({
           <div className="md:col-span-2">
             <button type="submit" disabled={busy} className={btnPrimary}>
               <span className="material-symbols-outlined text-base" aria-hidden>save</span> Simpan Pengaturan
+            </button>
+          </div>
+        </form>
+      </section>
+
+      {/* Konten Situs */}
+      <section className={`${card} p-6`}>
+        <h2 className="font-headline-sm text-headline-sm text-on-surface mb-1">Konten Situs</h2>
+        <p className="font-label-md text-label-md text-secondary mb-4">
+          Isi seksi-seksi situs publik. Kosongkan sebuah bagian untuk menyembunyikan seksinya. Format baris memakai pemisah <code className="bg-surface-container-high px-1 rounded">|</code>.
+        </p>
+        <form onSubmit={saveSettings} className="grid grid-cols-1 gap-4">
+          <label className="block">
+            <span className="font-label-md text-label-md text-secondary block mb-1">Tentang Perayaan (paragraf dipisah baris kosong)</span>
+            <textarea rows={6} className={textarea} value={form.tentang} onChange={(e) => setForm({ ...form, tentang: e.target.value })} />
+          </label>
+          <label className="block">
+            <span className="font-label-md text-label-md text-secondary block mb-1">Rangkaian Kegiatan — per baris: <code>Tanggal | Judul | Deskripsi</code></span>
+            <textarea rows={4} className={textarea} placeholder={"17 Agustus | Lomba Anak-anak | Beragam lomba tradisional..."} value={form.kegiatan} onChange={(e) => setForm({ ...form, kegiatan: e.target.value })} />
+          </label>
+          <label className="block">
+            <span className="font-label-md text-label-md text-secondary block mb-1">Panitia — per baris: <code>Nama | Jabatan</code></span>
+            <textarea rows={4} className={textarea} placeholder={"Helmy Wibowo | Finance Director\nArie Kustanto | Koordinator Sponsorship"} value={form.panitia} onChange={(e) => setForm({ ...form, panitia: e.target.value })} />
+          </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label className="block">
+              <span className="font-label-md text-label-md text-secondary block mb-1">Rekening tambahan — per baris: <code>Bank | Nomor | Atas Nama</code></span>
+              <textarea rows={3} className={textarea} placeholder={"BRI | 03350106xxxx | Nama Pemilik\nMandiri | 13700231xxxx | Nama Pemilik"} value={form.rekeningLain} onChange={(e) => setForm({ ...form, rekeningLain: e.target.value })} />
+            </label>
+            <label className="block">
+              <span className="font-label-md text-label-md text-secondary block mb-1">Kode unik transfer (2–4 digit, kosong = tidak dipakai)</span>
+              <input className={`${input} tabular-nums`} inputMode="numeric" placeholder="mis. 178" value={form.kodeUnik} onChange={(e) => setForm({ ...form, kodeUnik: e.target.value.replace(/\D/g, "").slice(0, 4) })} />
+              <span className="font-label-md text-label-md text-secondary block mt-1">Donatur diminta menambah kode ini di akhir nominal (contoh: Rp 300.178) agar transfer mudah dicocokkan.</span>
+            </label>
+          </div>
+          <label className="block">
+            <span className="font-label-md text-label-md text-secondary block mb-1">Sponsorship — narasi (kosong = seksi disembunyikan)</span>
+            <textarea rows={3} className={textarea} placeholder="Kami membuka kesempatan bagi warga maupun pihak luar untuk menjadi sponsor..." value={form.sponsorText} onChange={(e) => setForm({ ...form, sponsorText: e.target.value })} />
+          </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label className="block">
+              <span className="font-label-md text-label-md text-secondary block mb-1">WA Koordinator Sponsorship</span>
+              <input className={input} placeholder="08xxx / 62xxx" value={form.sponsorWa} onChange={(e) => setForm({ ...form, sponsorWa: e.target.value })} />
+            </label>
+            <label className="block">
+              <span className="font-label-md text-label-md text-secondary block mb-1">Tautan Proposal Mitra (opsional)</span>
+              <input className={input} placeholder="https://..." value={form.sponsorUrl} onChange={(e) => setForm({ ...form, sponsorUrl: e.target.value })} />
+            </label>
+          </div>
+          <label className="block">
+            <span className="font-label-md text-label-md text-secondary block mb-1">Kontak Panitia — per baris: <code>Nama | Nomor WA</code> (kosong = seksi disembunyikan)</span>
+            <textarea rows={3} className={textarea} placeholder={"Pak Arda | 6281xxxx\nBu Wardah | 6285xxxx"} value={form.kontak} onChange={(e) => setForm({ ...form, kontak: e.target.value })} />
+          </label>
+          <div>
+            <button type="submit" disabled={busy} className={btnPrimary}>
+              <span className="material-symbols-outlined text-base" aria-hidden>save</span> Simpan Konten
             </button>
           </div>
         </form>

@@ -1,6 +1,8 @@
 import { getPublicData } from "@/lib/data";
 import { getSettings } from "@/lib/settings";
 import { KONFIG } from "@/lib/config";
+import { paragraphs, parseKegiatan, parsePanitia, parseRekening, parseKontak } from "@/lib/content";
+import { inisial } from "@/lib/format";
 import Countdown from "@/components/Countdown";
 import LiveData from "@/components/LiveData";
 import SiteHeader from "@/components/SiteHeader";
@@ -13,14 +15,23 @@ const HERO_BG =
 
 export default async function Home() {
   const d = await getPublicData();
-  const settings = await getSettings();
+  const s = await getSettings();
   const hari = Math.max(0, Math.floor((new Date(KONFIG.acara.tanggalHariH).getTime() - Date.now()) / 86400000));
+
+  const tentang = paragraphs(s.tentang);
+  const kegiatan = parseKegiatan(s.kegiatan);
+  const panitia = parsePanitia(s.panitia);
+  const kontak = parseKontak(s.kontak);
+  const adaSponsor = !!(s.sponsorText.trim() || s.sponsorWa || s.sponsorUrl);
+
   const pembayaran = {
-    bank: settings.bank,
-    noRekening: settings.noRekening,
-    atasNama: settings.atasNama,
-    whatsapp: settings.whatsapp,
-    qrisImage: settings.qrisImage,
+    rekening: [
+      { bank: s.bank, norek: s.noRekening, nama: s.atasNama },
+      ...parseRekening(s.rekeningLain),
+    ],
+    whatsapp: s.whatsapp,
+    qrisImage: s.qrisImage,
+    kodeUnik: s.kodeUnik,
   };
 
   return (
@@ -29,7 +40,7 @@ export default async function Home() {
 
       <main className="w-full">
         {/* HERO */}
-        <section className="relative w-full pt-16 pb-20 md:pt-28 md:pb-32 px-margin-mobile md:px-margin-desktop overflow-hidden scroll-mt-24" id="tentang">
+        <section className="relative w-full pt-16 pb-20 md:pt-28 md:pb-32 px-margin-mobile md:px-margin-desktop overflow-hidden scroll-mt-24" id="beranda">
           <div className="absolute inset-0 w-full h-full z-0">
             <div className="w-full h-full bg-cover bg-center opacity-20" style={{ backgroundImage: `url('${HERO_BG}')` }} />
             <div className="absolute inset-0 bg-gradient-to-b from-surface via-surface/80 to-surface" />
@@ -58,8 +69,89 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* PROGRESS + KEGIATAN + DONASI + DONATUR + LAPORAN (live, auto-refresh) */}
-        <LiveData initial={d} hari={hari} pembayaran={pembayaran} />
+        {/* TENTANG */}
+        {tentang.length > 0 && (
+          <section className="py-20 px-margin-mobile md:px-margin-desktop bg-surface w-full scroll-mt-24" id="tentang">
+            <div className="max-w-3xl mx-auto">
+              <div className="text-center mb-10">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-label-md text-label-md mb-4">
+                  <span className="material-symbols-outlined text-base" aria-hidden>auto_stories</span> Tentang Perayaan
+                </span>
+                <h2 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface">Semangat Kemerdekaan</h2>
+              </div>
+              <div className="space-y-5">
+                {tentang.map((p, i) => (
+                  <p key={i} className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed text-justify">{p}</p>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* PROGRESS + KEGIATAN + DONASI + DONATUR + LAPORAN (live) */}
+        <LiveData initial={d} hari={hari} pembayaran={pembayaran} kegiatan={kegiatan} />
+
+        {/* PANITIA */}
+        {panitia.length > 0 && (
+          <section className="py-24 px-margin-mobile md:px-margin-desktop bg-surface w-full scroll-mt-24" id="panitia">
+            <div className="max-w-container-max mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-4">Panitia</h2>
+                <p className="font-body-lg text-body-lg text-secondary max-w-2xl mx-auto">Pemuda-pemudi & warga Villa Gardenia yang menjadi motor penggerak perayaan ini.</p>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {panitia.map((p, i) => (
+                  <div key={i} className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 text-center">
+                    <div className="mx-auto w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center font-headline-sm text-headline-sm mb-3">{inisial(p.nama)}</div>
+                    <div className="font-body-md text-body-md text-on-surface font-semibold">{p.nama}</div>
+                    {p.jabatan && <div className="font-label-md text-label-md text-secondary mt-1">{p.jabatan}</div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* SPONSORSHIP */}
+        {adaSponsor && (
+          <section className="py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-low w-full scroll-mt-24" id="sponsor">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-4">Sponsorship</h2>
+              {paragraphs(s.sponsorText).map((p, i) => (
+                <p key={i} className="font-body-lg text-body-lg text-secondary mb-4">{p}</p>
+              ))}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+                {s.sponsorUrl && (
+                  <a href={s.sponsorUrl} target="_blank" rel="noopener" className="inline-flex items-center gap-2 bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-full press glow-red">
+                    <span className="material-symbols-outlined text-base" aria-hidden>description</span> Unduh Proposal Mitra
+                  </a>
+                )}
+                {s.sponsorWa && (
+                  <a href={`https://wa.me/${s.sponsorWa}`} target="_blank" rel="noopener" className="inline-flex items-center gap-2 bg-surface-container-lowest text-on-surface border border-outline-variant font-label-md text-label-md px-6 py-3 rounded-full press hover:border-primary hover:text-primary">
+                    <span className="material-symbols-outlined text-base" aria-hidden>chat</span> Hubungi Koordinator Sponsorship
+                  </a>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* KONTAK */}
+        {kontak.length > 0 && (
+          <section className="py-24 px-margin-mobile md:px-margin-desktop bg-surface w-full scroll-mt-24" id="kontak-panitia">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-4">Hubungi Kami</h2>
+              <p className="font-body-lg text-body-lg text-secondary mb-8">Ingin ikut serta dalam perayaan atau memiliki pertanyaan? Silakan hubungi panitia:</p>
+              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3">
+                {kontak.map((k, i) => (
+                  <a key={i} href={`https://wa.me/${k.wa}`} target="_blank" rel="noopener" className="inline-flex items-center gap-2 bg-surface-container-lowest text-on-surface border border-outline-variant font-label-md text-label-md px-6 py-3 rounded-full press hover:border-primary hover:text-primary">
+                    <span className="material-symbols-outlined text-base text-primary" aria-hidden>chat</span> Hubungi {k.nama}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </main>
 
       <footer className="bg-surface-container-highest border-t border-outline-variant" id="kontak">
@@ -67,7 +159,7 @@ export default async function Home() {
           <div className="flex flex-col items-center md:items-start text-center md:text-left gap-2">
             <div className="font-headline-sm text-headline-sm font-bold text-on-surface">Villa Gardenia 17-an</div>
             <div className="font-body-md text-body-md text-secondary">© 2026 Panitia HUT RI ke-81 Villa Gardenia. Semangat Gotong Royong.</div>
-            <a className="font-body-md text-body-md text-primary hover:underline" href={`https://wa.me/${settings.whatsapp}`}>Kontak Panitia (WhatsApp)</a>
+            <a className="font-body-md text-body-md text-primary hover:underline" href={`https://wa.me/${s.whatsapp}`}>Kontak Panitia (WhatsApp)</a>
           </div>
         </div>
       </footer>

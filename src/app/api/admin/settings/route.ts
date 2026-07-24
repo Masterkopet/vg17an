@@ -33,6 +33,20 @@ export async function POST(req: NextRequest) {
         .join(",");
     }
   }
+  // Konten situs (teks bebas, dibatasi panjangnya)
+  const MAXLEN: Record<string, number> = {
+    tentang: 5000, kegiatan: 4000, panitia: 3000, rekeningLain: 1500,
+    sponsorText: 3000, kontak: 1500,
+  };
+  for (const k of ["tentang", "kegiatan", "panitia", "rekeningLain", "sponsorText", "kontak"] as const) {
+    if (typeof b[k] === "string") partial[k] = (b[k] as string).replace(/\r\n/g, "\n").trim().slice(0, MAXLEN[k]);
+  }
+  if (typeof b.kodeUnik === "string") partial.kodeUnik = (b.kodeUnik as string).replace(/\D/g, "").slice(0, 4);
+  if (typeof b.sponsorWa === "string") partial.sponsorWa = (b.sponsorWa as string).trim() === "" ? "" : normalizeWa(b.sponsorWa as string);
+  if (typeof b.sponsorUrl === "string") {
+    const u = (b.sponsorUrl as string).trim().slice(0, 300);
+    partial.sponsorUrl = u === "" || /^https?:\/\//i.test(u) ? u : "";
+  }
 
   await setSettings(partial);
   return NextResponse.json({ ok: true, settings: await getSettings() });

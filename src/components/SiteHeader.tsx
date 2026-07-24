@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 const links = [
+  { href: "#tentang", label: "Tentang" },
   { href: "#kegiatan", label: "Kegiatan" },
   { href: "#donasi", label: "Donasi" },
   { href: "#donatur", label: "Donatur" },
@@ -35,7 +36,7 @@ export default function SiteHeader() {
       className={`bg-surface/90 backdrop-blur border-b border-outline-variant w-full top-0 z-50 sticky transition-shadow duration-300 ${scrolled ? "shadow-md" : "shadow-none"}`}
     >
       <div className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-20 max-w-container-max mx-auto">
-        <a href="#tentang" onClick={close} className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
+        <a href="#beranda" onClick={close} className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }} aria-hidden>celebration</span>
           Villa Gardenia 17-an
         </a>
