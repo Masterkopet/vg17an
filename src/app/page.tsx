@@ -2,6 +2,7 @@ import { getPublicData } from "@/lib/data";
 import { KONFIG } from "@/lib/config";
 import Countdown from "@/components/Countdown";
 import LiveData from "@/components/LiveData";
+import SiteHeader from "@/components/SiteHeader";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,21 +16,7 @@ export default async function Home() {
 
   return (
     <>
-      <header className="bg-surface/90 backdrop-blur border-b border-outline-variant w-full top-0 z-50 sticky">
-        <div className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-20 max-w-container-max mx-auto">
-          <a href="#tentang" className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }} aria-hidden>celebration</span>
-            Villa Gardenia 17-an
-          </a>
-          <nav className="hidden md:flex items-center gap-gutter">
-            <a className="text-secondary font-medium font-label-md text-label-md hover:text-primary transition-colors" href="#kegiatan">Kegiatan</a>
-            <a className="text-secondary font-medium font-label-md text-label-md hover:text-primary transition-colors" href="#donasi">Donasi</a>
-            <a className="text-secondary font-medium font-label-md text-label-md hover:text-primary transition-colors" href="#donatur">Donatur</a>
-            <a className="text-secondary font-medium font-label-md text-label-md hover:text-primary transition-colors" href="#laporan">Laporan</a>
-          </nav>
-          <a className="flex items-center justify-center bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-full hover:bg-surface-tint press glow-red" href="#donasi">Donasi</a>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="w-full">
         {/* HERO */}

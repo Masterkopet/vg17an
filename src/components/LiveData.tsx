@@ -205,12 +205,12 @@ export default function LiveData({ initial, hari }: { initial: PublicData; hari:
       {/* DONATUR */}
       <section className="py-24 px-margin-mobile md:px-margin-desktop bg-surface w-full scroll-mt-24" id="donatur">
         <div className="max-w-container-max mx-auto">
-          <div className="text-center mb-12">
+          <Reveal className="text-center mb-12">
             <h2 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-4">Papan Donatur</h2>
             <p className="font-body-lg text-body-lg text-secondary max-w-2xl mx-auto">
               Terima kasih kepada <span className="text-primary font-semibold">{data.jumlahDonatur.toLocaleString("id-ID")}</span> warga dan keluarga yang telah berdonasi. Gotong royong Anda sangat berarti!
             </p>
-          </div>
+          </Reveal>
           {data.donatur.length === 0 ? (
             <p className="text-center text-secondary font-body-md text-body-md py-8">Belum ada donasi tercatat. Jadilah yang pertama! 🇮🇩</p>
           ) : (
@@ -235,10 +235,10 @@ export default function LiveData({ initial, hari }: { initial: PublicData; hari:
       {/* LAPORAN */}
       <section className="py-24 px-margin-mobile md:px-margin-desktop bg-surface-container-low w-full scroll-mt-24" id="laporan">
         <div className="max-w-container-max mx-auto">
-          <div className="text-center mb-16">
+          <Reveal className="text-center mb-16">
             <h2 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface mb-4">Laporan Keuangan Transparan</h2>
             <p className="font-body-lg text-body-lg text-secondary max-w-2xl mx-auto">Pantau penggunaan dana warga secara terbuka untuk transparansi dan akuntabilitas bersama.</p>
-          </div>
+          </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-12">
             <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant"><span className="font-label-md text-label-md text-secondary block mb-1">Total Pemasukan</span><span className="font-headline-md text-headline-md text-primary tabular-nums">{rupiah(data.totalPemasukan)}</span></div>
             <div className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant"><span className="font-label-md text-label-md text-secondary block mb-1">Total Pengeluaran</span><span className="font-headline-md text-headline-md text-on-surface tabular-nums">{rupiah(data.totalPengeluaran)}</span></div>
