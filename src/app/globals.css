@@ -150,7 +150,7 @@ body {
 }
 @keyframes kenburns {
   from { transform: scale(1) translateY(0); }
-  to { transform: scale(1.06) translateY(-1.5%); }
+  to { transform: scale(1.035) translateY(-0.8%); }
 }
 
 /* Kelip di atas kembang api ilustrasi */

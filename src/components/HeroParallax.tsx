@@ -113,7 +113,10 @@ export default function HeroParallax() {
   }, []);
 
   return (
-    <div ref={stageRef} className="relative w-full overflow-hidden h-[420px] sm:h-[480px] md:h-[560px] lg:h-[640px]">
+    <div
+      ref={stageRef}
+      className="relative w-full overflow-hidden h-[420px] sm:h-[480px] md:h-auto md:aspect-[1717/916] md:max-h-[900px]"
+    >
       {/* L1 — ilustrasi (terjauh, gerak paling pelan) */}
       <div data-depth="8" data-scroll="0.18" className="absolute -inset-4 will-change-transform">
         {/* eslint-disable-next-line @next/next/no-img-element */}
