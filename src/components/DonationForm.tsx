@@ -14,6 +14,7 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [msg, setMsg] = useState("");
+  const [copied, setCopied] = useState(false);
 
   function pilih(v: number) {
     setNominal(v);
@@ -166,7 +167,29 @@ export default function DonationForm({ pembayaran: p }: { pembayaran: Pembayaran
                   </div>
                   <div className="space-y-2 font-body-md text-body-md">
                     <div className="flex justify-between"><span className="text-secondary">Bank</span><span className="text-on-surface font-semibold">{p.bank}</span></div>
-                    <div className="flex justify-between"><span className="text-secondary">No. Rekening</span><span className="text-on-surface font-semibold tabular-nums">{p.noRekening}</span></div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-secondary">No. Rekening</span>
+                      <span className="flex items-center gap-2">
+                        <span className="text-on-surface font-semibold tabular-nums">{p.noRekening}</span>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(p.noRekening.replace(/[\s.-]/g, ""));
+                              setCopied(true);
+                              setTimeout(() => setCopied(false), 2000);
+                            } catch {
+                              /* clipboard tidak tersedia */
+                            }
+                          }}
+                          aria-label="Salin nomor rekening"
+                          className={`press inline-flex items-center gap-1 px-2 py-1 rounded-lg font-label-md text-label-md transition-colors ${copied ? "bg-[#e6f4ea] text-[#1e6b33]" : "text-primary hover:bg-primary/5"}`}
+                        >
+                          <span className="material-symbols-outlined text-base" aria-hidden>{copied ? "check" : "content_copy"}</span>
+                          {copied ? "Tersalin" : "Salin"}
+                        </button>
+                      </span>
+                    </div>
                     <div className="flex justify-between"><span className="text-secondary">Atas Nama</span><span className="text-on-surface font-semibold text-right">{p.atasNama}</span></div>
                   </div>
                 </div>
