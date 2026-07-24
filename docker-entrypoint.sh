@@ -1,8 +1,11 @@
 #!/bin/sh
 set -e
 
+# Default DATABASE_URL bila belum diset (tetap disarankan diisi di Coolify + volume /app/data).
+export DATABASE_URL="${DATABASE_URL:-file:/app/data/prod.db}"
+
 # Pastikan folder database (volume persisten) ada, lalu sinkronkan skema.
-DB_DIR="$(dirname "$(echo "${DATABASE_URL:-file:/app/data/prod.db}" | sed 's|^file:||')")"
+DB_DIR="$(dirname "$(echo "$DATABASE_URL" | sed 's|^file:||')")"
 mkdir -p "$DB_DIR"
 
 echo "[entrypoint] prisma db push..."
