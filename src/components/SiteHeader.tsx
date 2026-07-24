@@ -38,7 +38,7 @@ export default function SiteHeader() {
       <div className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-20 max-w-container-max mx-auto">
         <a href="#beranda" onClick={close} className="flex items-center gap-2 min-w-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/logo-paguyuban.png" alt="Paguyuban Warga Villa Gardenia" className="h-9 md:h-10 w-auto" />
+          <img src="/assets/logo-header.png" alt="Paguyuban Warga Villa Gardenia — HUT RI ke-81" className="h-9 md:h-11 w-auto" />
         </a>
 
         <nav className="hidden md:flex items-center gap-gutter">
