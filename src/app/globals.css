@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #fcf8f9;
+  color: #1b1b1c;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  user-select: none;
+}
+
+.glow-red {
+  box-shadow: 0 10px 30px -12px rgba(188, 1, 0, 0.18);
+}
+.glow-red-hover {
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+.glow-red-hover:hover {
+  box-shadow: 0 18px 44px -12px rgba(188, 1, 0, 0.28);
+  transform: translateY(-2px);
+}
+
+.press {
+  transition: transform 140ms var(--ease-out);
+}
+.press:active {
+  transform: scale(0.97);
+}
+
+.progress-fill {
+  width: 0;
+  transition: width 1500ms var(--ease-out);
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.55) 50%, transparent 80%);
+  transform: translateX(-100%);
+  animation: shine 2.4s var(--ease-in-out) 3;
+}
+@keyframes shine {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+}
+
+.modal-backdrop {
+  transition: opacity 200ms var(--ease-out);
+}
+.modal-panel {
+  transform-origin: center;
+  transition: transform 220ms var(--ease-out), opacity 220ms var(--ease-out);
+}
+.modal[hidden] {
+  display: none;
+}
+.modal[data-closed] .modal-backdrop {
+  opacity: 0;
+}
+.modal[data-closed] .modal-panel {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.quick-nominal[aria-pressed="true"] {
+  border-color: #bc0100;
+  background: rgba(188, 1, 0, 0.06);
+  color: #bc0100;
+  font-weight: 700;
+}
+
+.badge-live {
+  background: #e6f4ea;
+  color: #1e6b33;
+  border: 1px solid #b6ddc2;
+}
+.badge-sample {
+  background: #fff4d6;
+  color: #7a5f00;
+  border: 1px solid #f0d98a;
+}
+
+.card-img {
+  transition: transform 500ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .card-img:hover {
+    transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .progress-fill {
+    transition: none;
+  }
+  .shine::after,
+  .card-img {
+    animation: none;
+    transition: none;
+  }
+  .glow-red-hover:hover {
+    transform: none;
+  }
+}
+
+@media print {
+  header, footer, #tentang, #kegiatan, #donasi, #donatur,
+  #btn-print, #share-wa, #share-copy, #pay-modal, #toast {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    overflow: visible !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  #progress, #laporan {
+    padding: 12px 0 !important;
+    background: #fff !important;
+  }
+  .glow-red {
+    box-shadow: none !important;
+  }
+  table {
+    page-break-inside: auto;
+  }
+  tr, thead {
+    page-break-inside: avoid;
+  }
+}

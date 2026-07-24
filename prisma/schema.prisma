@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Donasi masuk. status: pending -> approved | rejected (via Telegram bendahara)
+model Donation {
+  id          Int       @id @default(autoincrement())
+  name        String?
+  amount      Int
+  status      String    @default("pending")
+  note        String?
+  tgChatId    String?
+  tgMessageId String?
+  createdAt   DateTime  @default(now())
+  decidedAt   DateTime?
+
+  @@index([status, createdAt])
+}
+
+// Pengeluaran panitia (diinput bendahara via perintah Telegram /keluar)
+model Expense {
+  id          Int      @id @default(autoincrement())
+  description String
+  amount      Int
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([date])
+}
+
+// Penyimpanan sederhana untuk konfigurasi yang bisa berubah (mis. target dana).
+model Setting {
+  key   String @id
+  value String
+}

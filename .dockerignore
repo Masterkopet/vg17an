@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.gitignore
+legacy
+prisma/data
+*.db
+*.md
+*.zip
+*.png
+code.html
+index.html
+data-donasi-template.csv
+.env
+.env.local
+.env.*.local
